@@ -37,7 +37,7 @@ export function AppNavbar() {
           render={
             <Link to="/categories">
               <PlusIcon />
-              Add transaction
+              Transaction
             </Link>
           }
         />
