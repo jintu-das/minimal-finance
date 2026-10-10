@@ -1,4 +1,5 @@
 import { AppNavbar } from "@/components/common/navbar";
+import { ChatButton } from "@/features/chat/components/chat-button";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
@@ -8,6 +9,7 @@ const RootLayout = () => (
     <AppNavbar />
     <Outlet />
     <TanStackRouterDevtools />
+    <ChatButton />
   </>
 );
 
