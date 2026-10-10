@@ -1,5 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { TransactionFilter } from "@/features/transactions/components/transaction-filter";
+import { TransactionsTable } from "@/features/transactions/components/transactions-list";
 import { createFileRoute } from "@tanstack/react-router";
 import { SparklesIcon } from "lucide-react";
 
@@ -20,6 +21,7 @@ function Index() {
       </Alert>
 
       <TransactionFilter />
+      <TransactionsTable />
     </main>
   );
 }
