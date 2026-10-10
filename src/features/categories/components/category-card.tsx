@@ -27,7 +27,7 @@ export default function CategoryCard(category: Category) {
         </span>
       </div>
 
-      <Progress value={progress} className="*:data-[slot=progress-track]:h-1.5">
+      <Progress value={progress} className="*:data-[slot=progress-track]:h-0.5">
         <div className="order-1 flex w-full justify-between text-sm">
           <ProgressLabel className="text-muted-foreground">
             {category.records} records

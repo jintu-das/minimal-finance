@@ -1,7 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import * as z from "zod";
-
 import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import {
@@ -18,28 +16,24 @@ import {
   InputGroupText,
 } from "@/components/ui/input-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
-const formSchema = z.object({
-  label: z.string().trim().min(1, "Enter a category name.").max(32),
-  budget: z.coerce.number<string>().min(0, "Budget must be zero or more."),
-  type: z.enum(["income", "expense"]),
-});
+import { addCategoryformSchema } from "../schema";
+import type { z } from "zod";
 
 export function AddCategoryForm() {
   const form = useForm<
-    z.input<typeof formSchema>,
+    z.input<typeof addCategoryformSchema>,
     unknown,
-    z.output<typeof formSchema>
+    z.output<typeof addCategoryformSchema>
   >({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(addCategoryformSchema),
     defaultValues: {
       label: "",
-      budget: "0",
+      budget: "",
       type: "expense",
     },
   });
 
-  function onSubmit(data: z.output<typeof formSchema>) {
+  function onSubmit(data: z.output<typeof addCategoryformSchema>) {
     console.log("Category submitted:", data);
   }
 
