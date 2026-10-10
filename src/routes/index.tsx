@@ -1,4 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { TransactionFilter } from "@/features/transactions/components/transaction-filter";
 import { createFileRoute } from "@tanstack/react-router";
 import { SparklesIcon } from "lucide-react";
 
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/")({
 // eslint-disable-next-line react-refresh/only-export-components
 function Index() {
   return (
-    <main className="container mx-auto space-y-2 pt-4">
+    <main className="container mx-auto space-y-8 pt-8">
       <Alert>
         <SparklesIcon />
         <AlertTitle>AI INSIGHT</AlertTitle>
@@ -17,6 +18,8 @@ function Index() {
           Your dining out expenses are 40% higher this week.
         </AlertDescription>
       </Alert>
+
+      <TransactionFilter />
     </main>
   );
 }
