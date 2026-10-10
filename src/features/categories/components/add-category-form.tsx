@@ -11,19 +11,30 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/components/ui/input-group";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const formSchema = z.object({
   label: z.string().trim().min(1, "Enter a category name.").max(32),
-  budget: z.number().min(0, "Budget must be zero or more."),
+  budget: z.coerce.number<string>().min(0, "Budget must be zero or more."),
   type: z.enum(["income", "expense"]),
 });
 
 export function AddCategoryForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<
+    z.input<typeof formSchema>,
+    unknown,
+    z.output<typeof formSchema>
+  >({
     resolver: zodResolver(formSchema),
     defaultValues: {
       label: "",
-      budget: 0,
+      budget: "0",
       type: "expense",
     },
   });
@@ -36,6 +47,28 @@ export function AddCategoryForm() {
     <>
       <form id="add-category-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
+          <Controller
+            name="type"
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <Tabs
+                  onBlur={field.onBlur}
+                  value={field.value}
+                  onValueChange={(value) => field.onChange(value)}
+                >
+                  <TabsList className="w-full">
+                    <TabsTrigger value="expense">Expense</TabsTrigger>
+                    <TabsTrigger value="income">Income</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+                {fieldState.invalid && (
+                  <FieldError errors={[fieldState.error]} />
+                )}
+              </Field>
+            )}
+          />
+
           <Controller
             name="label"
             control={form.control}
@@ -55,52 +88,24 @@ export function AddCategoryForm() {
               </Field>
             )}
           />
+
           <Controller
             name="budget"
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="category-budget">Budget</FieldLabel>
-                <Input
-                  id="category-budget"
-                  name={field.name}
-                  ref={field.ref}
-                  onBlur={field.onBlur}
-                  onChange={(event) =>
-                    field.onChange(Number(event.target.value))
-                  }
-                  value={field.value}
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  placeholder="0.00"
-                  aria-invalid={fieldState.invalid}
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-          <Controller
-            name="type"
-            control={form.control}
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor="category-type">Type</FieldLabel>
-                <select
-                  id="category-type"
-                  name={field.name}
-                  ref={field.ref}
-                  onBlur={field.onBlur}
-                  onChange={field.onChange}
-                  value={field.value}
-                  aria-invalid={fieldState.invalid}
-                  className="h-9 w-full rounded-md border border-input bg-background px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
-                >
-                  <option value="expense">Expense</option>
-                  <option value="income">Income</option>
-                </select>
+                <InputGroup aria-invalid={fieldState.invalid}>
+                  <InputGroupAddon align="inline-start">
+                    <InputGroupText>₹</InputGroupText>
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    {...field}
+                    type="number"
+                    placeholder="0.00"
+                    aria-invalid={fieldState.invalid}
+                  />
+                </InputGroup>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
