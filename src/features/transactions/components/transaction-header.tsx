@@ -1,20 +1,79 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { formatCurrency } from "@/utils";
+import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
 import { transactions } from "../mock-data";
 
 export function TransactionHeader() {
+  const expenses = transactions.filter((transaction) => transaction.amount < 0);
+  const income = transactions.filter((transaction) => transaction.amount > 0);
   const netTotal = transactions.reduce(
     (total, transaction) => total + transaction.amount,
     0,
   );
+  const totalSpent = expenses.reduce(
+    (total, transaction) => total + Math.abs(transaction.amount),
+    0,
+  );
+  const totalEarned = income.reduce((total, transaction) => total + transaction.amount, 0);
+
+  const summaries = [
+    {
+      label: "Net position",
+      amount: netTotal,
+      detail: "Income minus expenses",
+      icon: Wallet,
+      showSign: true,
+    },
+    {
+      label: "Total spent",
+      amount: totalSpent,
+      detail: `${expenses.length} outgoing transactions`,
+      icon: ArrowDownRight,
+      showSign: false,
+    },
+    {
+      label: "Total earned",
+      amount: totalEarned,
+      detail: `${income.length} incoming transactions`,
+      icon: ArrowUpRight,
+      showSign: false,
+    },
+  ];
+
   return (
-    <header className="">
-      <p className="text-xs text-muted-foreground font-light uppercase font-mono">
-        Net Position - Q4
-      </p>
-      <h1 className="text-3xl font-medium">
-        {netTotal > 0 ? "+" : ""}
-        {formatCurrency(netTotal)}
-      </h1>
-    </header>
+    <section
+      aria-label="Transaction summary"
+      className="grid gap-4 sm:grid-cols-3"
+    >
+      {summaries.map(({ label, amount, detail, icon: Icon, showSign }) => (
+        <Card
+          key={label}
+          size="sm"
+          className="rounded-xl border-0 shadow-none ring-1 ring-border transition-colors hover:bg-muted/30"
+        >
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {label}
+            </CardTitle>
+            <span className="flex size-8 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+              <Icon aria-hidden="true" className="size-4" />
+            </span>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-1">
+            <p className="text-2xl font-semibold tracking-tight tabular-nums sm:text-3xl">
+              {showSign && amount > 0 ? "+" : ""}
+              {formatCurrency(amount)}
+            </p>
+            <CardDescription className="text-xs">{detail}</CardDescription>
+          </CardContent>
+        </Card>
+      ))}
+    </section>
   );
 }
