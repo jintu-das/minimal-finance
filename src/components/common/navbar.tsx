@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
+import { MoonIcon, PlusIcon, User2 } from "lucide-react";
 import { Button } from "../ui/button";
-import { PlusIcon } from "lucide-react";
 
 const menuItems = [
   {
@@ -18,8 +18,8 @@ const menuItems = [
 export function AppNavbar() {
   return (
     <header className="border-b">
-      <nav className="container mx-auto flex h-16 items-center justify-between">
-        <div className="flex items-center gap-4">
+      <nav className="container mx-auto flex h-16 items-center justify-start gap-2">
+        <div className="flex items-center gap-4 flex-1">
           {menuItems.map((menu) => (
             <Link
               key={menu.id}
@@ -31,16 +31,15 @@ export function AppNavbar() {
           ))}
         </div>
 
-        {/* Right: Action button */}
-        <Button
-          variant="secondary"
-          render={
-            <Link to="/categories">
-              <PlusIcon />
-              Transaction
-            </Link>
-          }
-        />
+        <Button size="icon" variant="secondary">
+          <PlusIcon />
+        </Button>
+        <Button size="icon" variant="secondary">
+          <MoonIcon />
+        </Button>
+        <Button size="icon" variant="default">
+          <User2 />
+        </Button>
       </nav>
     </header>
   );
