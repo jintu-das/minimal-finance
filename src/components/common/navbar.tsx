@@ -1,6 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { MoonIcon, PlusIcon, User2 } from "lucide-react";
+import { ArrowLeftRight, FolderPlus, PlusIcon } from "lucide-react";
 import { Button } from "../ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
 
 const menuItems = [
   {
@@ -31,15 +40,37 @@ export function AppNavbar() {
           ))}
         </div>
 
-        <Button size="icon" variant="secondary">
-          <PlusIcon />
-        </Button>
-        <Button size="icon" variant="secondary">
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            render={
+              <Button aria-label="Create new" variant="default">
+                <PlusIcon aria-hidden="true" />
+                Create
+              </Button>
+            }
+          />
+          <DropdownMenuContent className="w-52" align="end">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Create new</DropdownMenuLabel>
+              <DropdownMenuItem>
+                <ArrowLeftRight />
+                Transaction
+                <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <FolderPlus />
+                Category
+                <DropdownMenuShortcut>⌘C</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+        {/* <Button size="icon" variant="secondary">
           <MoonIcon />
-        </Button>
-        <Button size="icon" variant="default">
+        </Button> */}
+        {/* <Button size="icon" variant="default">
           <User2 />
-        </Button>
+        </Button> */}
       </nav>
     </header>
   );
