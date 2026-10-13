@@ -10,7 +10,7 @@ export function ChatButton() {
       className="fixed right-6 bottom-6 z-50  shadow-lg"
       aria-label="Open chat assistant"
     >
-      <SparklesIcon /> Ask AI <Kbd>⌘K</Kbd>
+      <SparklesIcon /> Ask AI
     </Button>
   );
 }
