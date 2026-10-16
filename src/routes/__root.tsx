@@ -1,7 +1,12 @@
 import { AppNavbar } from "@/components/common/navbar";
 import { ChatButton } from "@/features/chat/components/chat-button";
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import type { QueryClient } from "@tanstack/react-query";
+
+interface RouterContext {
+  queryClient: QueryClient;
+}
 
 // eslint-disable-next-line react-refresh/only-export-components
 const RootLayout = () => (
@@ -13,4 +18,6 @@ const RootLayout = () => (
   </>
 );
 
-export const Route = createRootRoute({ component: RootLayout });
+export const Route = createRootRouteWithContext<RouterContext>()({
+  component: RootLayout,
+});
