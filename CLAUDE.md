@@ -9,7 +9,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run lint`: ESLint over the whole repo
 - `npm run preview`: serve the production build
 
-There is no test runner configured. The backend lives in the sibling repo `../minimal-finance-api` (NestJS + Prisma).
+- `npm test`: run Vitest in watch mode. For a single CI-style run use `npx vitest run`; for one file use `npx vitest run src/path/to/file.test.ts`.
+
+**Testing:** Vitest is the runner and reuses `vite.config.ts` (including the `@/` alias). Existing examples live in `src/features/categories/` (`schema.test.ts`, `api/fetch-categories.api.test.ts`). Name new tests `*.test.ts(x)` and colocate them next to the code under test. Only Vitest is installed: there is no `jsdom`/`happy-dom` and no React Testing Library, so add them (and set `test.environment` in `vite.config.ts`) before writing component tests. Until then, prefer unit tests for pure logic such as zod schemas in `schema.ts` and data helpers. Do not call the real backend from tests; mock the axios instance from `src/lib/api.ts`.
+
+The backend lives in the sibling repo `../minimal-finance-api` (NestJS + Prisma).
 
 ## Environment
 
