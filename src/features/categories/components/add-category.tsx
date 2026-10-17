@@ -1,28 +1,20 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Plus } from "lucide-react";
-import { useState } from "react";
 import { AddCategoryForm } from "./add-category-form";
 
-export function AddCategory() {
-  const [open, setOpen] = useState(false);
+type AddCategoryProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
 
+export function AddCategory({ open, onOpenChange }: AddCategoryProps) {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger
-        render={
-          <Button variant="outline">
-            <Plus /> Category
-          </Button>
-        }
-      />
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>Create Category</DialogTitle>
@@ -32,7 +24,7 @@ export function AddCategory() {
           </DialogDescription>
         </DialogHeader>
 
-        <AddCategoryForm onSuccess={() => setOpen(false)} />
+        <AddCategoryForm onSuccess={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
   );
