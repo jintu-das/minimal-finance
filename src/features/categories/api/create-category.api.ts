@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { AddCategoryFormValues } from "../schema";
+import type { CreateCategoryFormValues } from "../schema";
 import api from "@/lib/api";
 
-function createCategory(values: AddCategoryFormValues) {
+function createCategory(values: CreateCategoryFormValues) {
   return api.post("/categories", values);
 }
 

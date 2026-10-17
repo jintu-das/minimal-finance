@@ -17,23 +17,23 @@ import {
   InputGroupText,
 } from "@/components/ui/input-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { addCategoryformSchema } from "../schema";
+import { createCategoryFormSchema } from "../schema";
 import type { z } from "zod";
 import { useCreateCategory } from "../api/create-category.api";
 import { Spinner } from "@/components/ui/spinner";
 
-type AddCategoryFormProps = {
+type CreateCategoryFormProps = {
   onSuccess?: () => void;
 };
 
-export function AddCategoryForm({ onSuccess }: AddCategoryFormProps) {
+export function CreateCategoryForm({ onSuccess }: CreateCategoryFormProps) {
   const createCategory = useCreateCategory();
   const form = useForm<
-    z.input<typeof addCategoryformSchema>,
+    z.input<typeof createCategoryFormSchema>,
     unknown,
-    z.output<typeof addCategoryformSchema>
+    z.output<typeof createCategoryFormSchema>
   >({
-    resolver: zodResolver(addCategoryformSchema),
+    resolver: zodResolver(createCategoryFormSchema),
     defaultValues: {
       label: "",
       budget: "",
@@ -41,7 +41,7 @@ export function AddCategoryForm({ onSuccess }: AddCategoryFormProps) {
     },
   });
 
-  function onSubmit(data: z.output<typeof addCategoryformSchema>) {
+  function onSubmit(data: z.output<typeof createCategoryFormSchema>) {
     console.log("Category submitted:", data);
     createCategory.mutate(data, {
       onSuccess: () => {
@@ -53,7 +53,7 @@ export function AddCategoryForm({ onSuccess }: AddCategoryFormProps) {
 
   return (
     <>
-      <form id="add-category-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form id="create-category-form" onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <Controller
             name="type"
@@ -131,7 +131,7 @@ export function AddCategoryForm({ onSuccess }: AddCategoryFormProps) {
         </Button>
         <Button
           type="submit"
-          form="add-category-form"
+          form="create-category-form"
           disabled={createCategory.isPending}
         >
           {createCategory.isPending && <Spinner data-icon="inline-start" />}

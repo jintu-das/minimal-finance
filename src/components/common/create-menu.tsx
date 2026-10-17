@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowLeftRight, FolderPlus, PlusIcon } from "lucide-react";
-import { AddCategory } from "@/features/categories/components/add-category";
+import { CreateCategory } from "@/features/categories/components/create-category";
 import { Button } from "../ui/button";
 import {
   DropdownMenu,
@@ -42,7 +42,7 @@ export function CreateMenu() {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <AddCategory open={categoryOpen} onOpenChange={setCategoryOpen} />
+      <CreateCategory open={categoryOpen} onOpenChange={setCategoryOpen} />
     </>
   );
 }
