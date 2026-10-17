@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { CreateMenu } from "./create-menu";
+import { ModeToggle } from "./mode-toggle";
 
 const menuItems = [
   {
@@ -23,7 +24,7 @@ export function AppNavbar() {
             <Link
               key={menu.id}
               to={menu.to}
-              className="text-sm text-muted-foreground transition-colors hover:text-primary [&.active]:font-medium [&.active]:text-black [&.active]:border-b-2 border-black pb-2"
+              className="text-sm text-muted-foreground transition-colors hover:text-primary [&.active]:font-medium [&.active]:text-primary [&.active]:border-b-2 border-black dark:border-white pb-2"
             >
               {menu.title}
             </Link>
@@ -31,6 +32,7 @@ export function AppNavbar() {
         </div>
 
         <CreateMenu />
+        <ModeToggle />
         {/* <Button size="icon" variant="secondary">
           <MoonIcon />
         </Button> */}
