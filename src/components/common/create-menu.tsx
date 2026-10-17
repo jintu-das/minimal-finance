@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ArrowLeftRight, FolderPlus, PlusIcon } from "lucide-react";
+import { CreateTransaction } from "@/features/transactions/components/create-transaction";
 import { CreateCategory } from "@/features/categories/components/create-category";
 import { Button } from "../ui/button";
 import {
@@ -13,6 +14,7 @@ import {
 } from "../ui/dropdown-menu";
 
 export function CreateMenu() {
+  const [transactionOpen, setTransactionOpen] = useState(false);
   const [categoryOpen, setCategoryOpen] = useState(false);
 
   return (
@@ -29,7 +31,7 @@ export function CreateMenu() {
         <DropdownMenuContent className="w-52" align="end">
           <DropdownMenuGroup>
             <DropdownMenuLabel>Create new</DropdownMenuLabel>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTransactionOpen(true)}>
               <ArrowLeftRight />
               Transaction
               <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
@@ -42,6 +44,10 @@ export function CreateMenu() {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+      <CreateTransaction
+        open={transactionOpen}
+        onOpenChange={setTransactionOpen}
+      />
       <CreateCategory open={categoryOpen} onOpenChange={setCategoryOpen} />
     </>
   );
