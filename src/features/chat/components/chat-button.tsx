@@ -1,7 +1,6 @@
 import { SparklesIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Kbd } from "@/components/ui/kbd";
 
 export function ChatButton() {
   return (

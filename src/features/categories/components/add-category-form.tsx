@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { DialogFooter } from "@/components/ui/dialog";
 import {
   Field,
+  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -18,8 +19,15 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { addCategoryformSchema } from "../schema";
 import type { z } from "zod";
+import { useCreateCategory } from "../api/create-category.api";
+import { Spinner } from "@/components/ui/spinner";
 
-export function AddCategoryForm() {
+type AddCategoryFormProps = {
+  onSuccess?: () => void;
+};
+
+export function AddCategoryForm({ onSuccess }: AddCategoryFormProps) {
+  const createCategory = useCreateCategory();
   const form = useForm<
     z.input<typeof addCategoryformSchema>,
     unknown,
@@ -35,6 +43,12 @@ export function AddCategoryForm() {
 
   function onSubmit(data: z.output<typeof addCategoryformSchema>) {
     console.log("Category submitted:", data);
+    createCategory.mutate(data, {
+      onSuccess: () => {
+        form.reset();
+        onSuccess?.();
+      },
+    });
   }
 
   return (
@@ -100,6 +114,9 @@ export function AddCategoryForm() {
                     aria-invalid={fieldState.invalid}
                   />
                 </InputGroup>
+                <FieldDescription>
+                  Monthly spending limit for this category.
+                </FieldDescription>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
@@ -112,7 +129,12 @@ export function AddCategoryForm() {
         <Button type="button" variant="outline" onClick={() => form.reset()}>
           Reset
         </Button>
-        <Button type="submit" form="add-category-form">
+        <Button
+          type="submit"
+          form="add-category-form"
+          disabled={createCategory.isPending}
+        >
+          {createCategory.isPending && <Spinner data-icon="inline-start" />}
           Create Category
         </Button>
       </DialogFooter>

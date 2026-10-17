@@ -5,3 +5,5 @@ export const addCategoryformSchema = z.object({
   budget: z.coerce.number<string>().min(0, "Budget must be zero or more."),
   type: z.enum(["income", "expense"]),
 });
+
+export type AddCategoryFormValues = z.infer<typeof addCategoryformSchema>;
