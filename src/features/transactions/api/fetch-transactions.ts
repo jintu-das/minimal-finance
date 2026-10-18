@@ -3,9 +3,9 @@ import { queryOptions } from "@tanstack/react-query";
 import { transactionKeys } from "../query-keys";
 import type { Transaction, TransactionFilters } from "../types";
 
-function fetchTransactions({ type }: TransactionFilters) {
+function fetchTransactions({ type, search }: TransactionFilters) {
   return api.get<Array<Transaction>>("/transactions", {
-    params: type ? { type } : undefined,
+    params: { type, search },
   });
 }
 

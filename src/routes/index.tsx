@@ -14,8 +14,12 @@ export const Route = createFileRoute("/")({
       search.type === "income" || search.type === "expense"
         ? search.type
         : undefined,
+    search:
+      typeof search.search === "string" && search.search
+        ? search.search
+        : undefined,
   }),
-  loaderDeps: ({ search: { type } }) => ({ type }),
+  loaderDeps: ({ search: { type, search } }) => ({ type, search }),
   loader: ({ context: { queryClient }, deps }) =>
     queryClient.ensureQueryData(transactionsQueryOptions(deps)),
   component: Index,
@@ -23,11 +27,10 @@ export const Route = createFileRoute("/")({
 
 // eslint-disable-next-line react-refresh/only-export-components
 function Index() {
-  const { type } = Route.useSearch();
-  const transactionsQuery = useSuspenseQuery(
-    transactionsQueryOptions({ type }),
+  const { type, search } = Route.useSearch();
+  const { data: transactions } = useSuspenseQuery(
+    transactionsQueryOptions({ type, search }),
   );
-  const transactions = transactionsQuery.data;
 
   return (
     <main className="container mx-auto space-y-8 pt-8">

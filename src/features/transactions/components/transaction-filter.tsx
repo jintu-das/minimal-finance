@@ -4,24 +4,63 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { TransactionType } from "../types";
+import { useEffect, useState } from "react";
+import { getRouteApi } from "@tanstack/react-router";
 import { SearchIcon } from "lucide-react";
 
+const route = getRouteApi("/");
+
 export function TransactionFilter() {
+  const { type, search } = route.useSearch();
+  const navigate = route.useNavigate();
+  const [input, setInput] = useState(search ?? "");
+
+  useEffect(() => {
+    const next = input.trim() || undefined;
+    if (next === search) return;
+    const timeout = setTimeout(
+      () =>
+        navigate({
+          search: (prev) => ({ ...prev, search: next }),
+          replace: true,
+        }),
+      300,
+    );
+    return () => clearTimeout(timeout);
+  }, [input, search, navigate]);
+
   return (
     <section
       aria-label="Transaction filters"
       className="flex flex-col gap-4 sm:flex-row sm:items-center"
     >
-      <Tabs defaultValue="overview" className="min-w-0 flex-1">
+      <Tabs
+        value={type ?? "all"}
+        onValueChange={(value) =>
+          navigate({
+            search: (prev) => ({
+              ...prev,
+              type: value === "all" ? undefined : (value as TransactionType),
+            }),
+          })
+        }
+        className="min-w-0 flex-1"
+      >
         <TabsList variant="line">
-          <TabsTrigger value="overview">All</TabsTrigger>
-          <TabsTrigger value="analytics">Inflow</TabsTrigger>
-          <TabsTrigger value="reports">Outflow</TabsTrigger>
+          <TabsTrigger value="all">All</TabsTrigger>
+          <TabsTrigger value="income">Inflow</TabsTrigger>
+          <TabsTrigger value="expense">Outflow</TabsTrigger>
         </TabsList>
       </Tabs>
 
       <InputGroup className="max-w-xs">
-        <InputGroupInput type="search" placeholder="Search..." />
+        <InputGroupInput
+          type="search"
+          placeholder="Search by title..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
         <InputGroupAddon>
           <SearchIcon />
         </InputGroupAddon>

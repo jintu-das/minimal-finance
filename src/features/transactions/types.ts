@@ -17,4 +17,5 @@ export type TransactionType = Transaction["type"];
 
 export type TransactionFilters = {
   type?: TransactionType;
+  search?: string;
 };
