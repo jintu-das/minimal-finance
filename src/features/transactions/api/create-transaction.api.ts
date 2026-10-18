@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { CreateTransactionFormValues } from "../schema";
 import api from "@/lib/api";
+import { transactionKeys } from "../query-keys";
 
 function createTransaction(values: CreateTransactionFormValues) {
   return api.post("/transactions", values);
@@ -16,7 +17,7 @@ export function useCreateTransaction() {
       console.error("Error creating transaction:", error);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: transactionKeys.all });
       toast.success("Transaction created successfully.");
     },
   });

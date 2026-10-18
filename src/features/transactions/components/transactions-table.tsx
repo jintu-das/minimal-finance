@@ -1,15 +1,20 @@
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatCurrency } from "@/utils";
-import { transactions } from "../mock-data";
+import type { Transaction } from "../types";
 import { transactionColumns } from "./transactions-columns";
 import { DataTable } from "./data-table";
 
-const netTotal = transactions.reduce(
-  (total, transaction) => total + transaction.amount,
-  0,
-);
+export function TransactionsTable({
+  transactions,
+}: {
+  transactions: Array<Transaction>;
+}) {
+  const netTotal = transactions.reduce(
+    (total, transaction) =>
+      total + (transaction.type === "income" ? 1 : -1) * transaction.amount,
+    0,
+  );
 
-export function TransactionsTable() {
   return (
     <DataTable
       columns={transactionColumns}

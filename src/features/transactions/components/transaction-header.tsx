@@ -7,20 +7,18 @@ import {
 } from "@/components/ui/card";
 import { formatCurrency } from "@/utils";
 import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
-import { transactions } from "../mock-data";
+import type { Transaction } from "../types";
 
-export function TransactionHeader() {
-  const expenses = transactions.filter((transaction) => transaction.amount < 0);
-  const income = transactions.filter((transaction) => transaction.amount > 0);
-  const netTotal = transactions.reduce(
-    (total, transaction) => total + transaction.amount,
-    0,
-  );
-  const totalSpent = expenses.reduce(
-    (total, transaction) => total + Math.abs(transaction.amount),
-    0,
-  );
-  const totalEarned = income.reduce((total, transaction) => total + transaction.amount, 0);
+export function TransactionHeader({
+  transactions,
+}: {
+  transactions: Array<Transaction>;
+}) {
+  const expenses = transactions.filter(({ type }) => type === "expense");
+  const income = transactions.filter(({ type }) => type === "income");
+  const totalSpent = expenses.reduce((total, { amount }) => total + amount, 0);
+  const totalEarned = income.reduce((total, { amount }) => total + amount, 0);
+  const netTotal = totalEarned - totalSpent;
 
   const summaries = [
     {

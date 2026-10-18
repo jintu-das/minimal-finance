@@ -43,13 +43,11 @@ export const transactionColumns = columnHelper.columns([
     ),
     sortFn: "text",
   }),
-  columnHelper.accessor("counterparty", {
-    header: ({ column }) => (
-      <SortableHeader column={column} label="Counterparty" />
-    ),
+  columnHelper.accessor("title", {
+    header: ({ column }) => <SortableHeader column={column} label="Title" />,
     sortFn: "text",
   }),
-  columnHelper.accessor("category", {
+  columnHelper.accessor("category.label", {
     header: ({ column }) => <SortableHeader column={column} label="Category" />,
     cell: ({ getValue }) => (
       <span className="text-muted-foreground">{getValue()}</span>
@@ -66,12 +64,12 @@ export const transactionColumns = columnHelper.columns([
       <div
         className={cn(
           "text-right",
-          row.original.amount > 0
+          row.original.type === "income"
             ? "text-emerald-600 dark:text-emerald-400"
             : "text-muted-foreground",
         )}
       >
-        {row.original.amount > 0 ? "+" : ""}
+        {row.original.type === "income" ? "+" : "-"}
         {formatCurrency(row.original.amount)}
       </div>
     ),

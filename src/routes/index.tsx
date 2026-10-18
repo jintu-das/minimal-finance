@@ -1,23 +1,41 @@
 import { Separator } from "@/components/ui/separator";
+import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
 import { AiInsight } from "@/features/transactions/components/ai-insight";
 import { TransactionFilter } from "@/features/transactions/components/transaction-filter";
 import { TransactionHeader } from "@/features/transactions/components/transaction-header";
 import { TransactionsTable } from "@/features/transactions/components/transactions-table";
+import type { TransactionFilters } from "@/features/transactions/types";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
+  validateSearch: (search: Record<string, unknown>): TransactionFilters => ({
+    type:
+      search.type === "income" || search.type === "expense"
+        ? search.type
+        : undefined,
+  }),
+  loaderDeps: ({ search: { type } }) => ({ type }),
+  loader: ({ context: { queryClient }, deps }) =>
+    queryClient.ensureQueryData(transactionsQueryOptions(deps)),
   component: Index,
 });
 
 // eslint-disable-next-line react-refresh/only-export-components
 function Index() {
+  const { type } = Route.useSearch();
+  const transactionsQuery = useSuspenseQuery(
+    transactionsQueryOptions({ type }),
+  );
+  const transactions = transactionsQuery.data;
+
   return (
     <main className="container mx-auto space-y-8 pt-8">
       <AiInsight />
-      <TransactionHeader />
+      <TransactionHeader transactions={transactions} />
       <Separator />
       <TransactionFilter />
-      <TransactionsTable />
+      <TransactionsTable transactions={transactions} />
     </main>
   );
 }
