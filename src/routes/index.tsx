@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
+import { transactionSummaryQueryOptions } from "@/features/transactions/api/fetch-transaction-summary.api";
 import { AiInsight } from "@/features/transactions/components/ai-insight";
 import { TransactionFilter } from "@/features/transactions/components/transaction-filter";
 import { TransactionHeader } from "@/features/transactions/components/transaction-header";
@@ -21,7 +22,10 @@ export const Route = createFileRoute("/")({
   }),
   loaderDeps: ({ search: { type, search } }) => ({ type, search }),
   loader: ({ context: { queryClient }, deps }) =>
-    queryClient.ensureQueryData(transactionsQueryOptions(deps)),
+    Promise.all([
+      queryClient.ensureQueryData(transactionsQueryOptions(deps)),
+      queryClient.ensureQueryData(transactionSummaryQueryOptions()),
+    ]),
   component: Index,
 });
 
@@ -35,7 +39,7 @@ function Index() {
   return (
     <main className="container mx-auto space-y-8 pt-8">
       <AiInsight />
-      <TransactionHeader transactions={transactions} />
+      <TransactionHeader />
       <Separator />
       <TransactionFilter />
       <TransactionsTable transactions={transactions} />

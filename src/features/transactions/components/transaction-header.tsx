@@ -7,38 +7,31 @@ import {
 } from "@/components/ui/card";
 import { formatCurrency } from "@/utils";
 import { ArrowDownRight, ArrowUpRight, Wallet } from "lucide-react";
-import type { Transaction } from "../types";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { transactionSummaryQueryOptions } from "../api/fetch-transaction-summary.api";
 
-export function TransactionHeader({
-  transactions,
-}: {
-  transactions: Array<Transaction>;
-}) {
-  const expenses = transactions.filter(({ type }) => type === "expense");
-  const income = transactions.filter(({ type }) => type === "income");
-  const totalSpent = expenses.reduce((total, { amount }) => total + amount, 0);
-  const totalEarned = income.reduce((total, { amount }) => total + amount, 0);
-  const netTotal = totalEarned - totalSpent;
+export function TransactionHeader() {
+  const { data } = useSuspenseQuery(transactionSummaryQueryOptions());
 
   const summaries = [
     {
       label: "Net position",
-      amount: netTotal,
-      detail: "Income minus expenses",
+      amount: data.netPosition,
+      detail: "Income minus expenses this month",
       icon: Wallet,
       showSign: true,
     },
     {
       label: "Total spent",
-      amount: totalSpent,
-      detail: `${expenses.length} outgoing transactions`,
+      amount: data.totalSpent,
+      detail: "Outgoing this month",
       icon: ArrowDownRight,
       showSign: false,
     },
     {
       label: "Total earned",
-      amount: totalEarned,
-      detail: `${income.length} incoming transactions`,
+      amount: data.totalEarned,
+      detail: "Incoming this month",
       icon: ArrowUpRight,
       showSign: false,
     },

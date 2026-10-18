@@ -13,7 +13,20 @@ export type Transaction = {
   };
 };
 
-export type TransactionType = Transaction["type"];
+export type TransactionSummary = {
+  from: string;
+  to: string;
+  totalEarned: number;
+  totalSpent: number;
+  netPosition: number;
+};
+
+export type TransactionSummaryParams = {
+  from?: string;
+  to?: string;
+};
+
+export type TransactionType =Transaction["type"];
 
 export type TransactionFilters = {
   type?: TransactionType;
