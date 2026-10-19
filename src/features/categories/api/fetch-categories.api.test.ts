@@ -22,18 +22,41 @@ describe("categoriesQueryOptions", () => {
     vi.mocked(api.get).mockReset();
   });
 
-  it("uses the shared categories query key", () => {
-    expect(categoriesQueryOptions.queryKey).toEqual(["categories"]);
+  it("scopes the query key by filters", () => {
+    expect(categoriesQueryOptions().queryKey).toEqual([
+      "categories",
+      "list",
+      {},
+    ]);
+    expect(categoriesQueryOptions({ search: "food" }).queryKey).toEqual([
+      "categories",
+      "list",
+      { search: "food" },
+    ]);
   });
 
   it("fetches /categories and unwraps the axios response", async () => {
     vi.mocked(api.get).mockResolvedValue({ data: categories });
     const queryClient = new QueryClient();
+    const options = categoriesQueryOptions();
 
-    const data = await queryClient.ensureQueryData(categoriesQueryOptions);
+    const data = await queryClient.ensureQueryData(options);
 
-    expect(api.get).toHaveBeenCalledWith("/categories");
-    expect(categoriesQueryOptions.select?.({ data: categories } as never)).toEqual(categories);
+    expect(api.get).toHaveBeenCalledWith("/categories", {
+      params: { search: undefined },
+    });
+    expect(options.select?.({ data: categories } as never)).toEqual(categories);
     expect(data).toBeDefined();
+  });
+
+  it("sends the search term as a query param", async () => {
+    vi.mocked(api.get).mockResolvedValue({ data: categories });
+    const queryClient = new QueryClient();
+
+    await queryClient.ensureQueryData(categoriesQueryOptions({ search: "sal" }));
+
+    expect(api.get).toHaveBeenCalledWith("/categories", {
+      params: { search: "sal" },
+    });
   });
 });

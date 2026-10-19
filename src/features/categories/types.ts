@@ -6,3 +6,5 @@ export type Category = {
   type: "expense" | "income";
   updatedAt: string;
 };
+
+export type { CategoriesFilters } from "./schema";

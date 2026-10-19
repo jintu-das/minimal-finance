@@ -6,4 +6,16 @@ export const createCategoryFormSchema = z.object({
   type: z.enum(["income", "expense"]),
 });
 
+export const categoriesFiltersSchema = z.object({
+  search: z
+    .string()
+    .trim()
+    .max(100)
+    .transform((value) => value || undefined)
+    .optional()
+    .catch(undefined),
+});
+
+export type CategoriesFilters = z.infer<typeof categoriesFiltersSchema>;
+
 export type CreateCategoryFormValues = z.infer<typeof createCategoryFormSchema>;

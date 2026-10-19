@@ -55,7 +55,7 @@ export function CreateTransactionForm({
   onSuccess,
 }: CreateTransactionFormProps) {
   const createTransaction = useCreateTransaction();
-  const categoriesQuery = useQuery(categoriesQueryOptions);
+  const categoriesQuery = useQuery(categoriesQueryOptions());
   const form = useForm<
     CreateTransactionFormInput,
     unknown,
