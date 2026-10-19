@@ -5,6 +5,8 @@ export type Category = {
   label: string;
   type: "expense" | "income";
   updatedAt: string;
+  spent: number;
+  transactionCount: number;
 };
 
 export type { CategoriesFilters } from "./schema";
