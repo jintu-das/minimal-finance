@@ -4,7 +4,7 @@ import { categoriesKeys } from "../query-keys";
 import type { CategoriesFilters, Category } from "../types";
 
 async function fetchCategories({ search }: CategoriesFilters) {
-  return api.get<Array<Category>>("/categories/as", {
+  return api.get<Array<Category>>("/categories", {
     params: { search },
   });
 }
