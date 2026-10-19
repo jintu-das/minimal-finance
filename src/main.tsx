@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import "./index.css";
 import { ThemeProvider } from "./providers/theme-provider";
+import { NotFoundComponent } from "./components/common/not-found";
+import { ErrorComponent } from "./components/common/error";
 
 // Create a client
 const queryClient = new QueryClient();
@@ -21,6 +23,8 @@ const router = createRouter({
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
+  defaultNotFoundComponent: NotFoundComponent,
+  defaultErrorComponent: ErrorComponent,
 });
 
 // Register the router instance for type safety
