@@ -19,12 +19,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDeleteTransaction } from "../api/delete-transaction.api";
 import type { Transaction } from "../types";
+import { EditTransaction } from "./edit-transaction";
 
 export function TransactionRowActions({
   transaction,
 }: {
   transaction: Transaction;
 }) {
+  const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const deleteTransaction = useDeleteTransaction();
 
@@ -43,8 +45,7 @@ export function TransactionRowActions({
           }
         />
         <DropdownMenuContent align="end">
-          {/* TODO: wire up edit transaction */}
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setEditOpen(true)}>
             <Pencil />
             Edit
           </DropdownMenuItem>
@@ -57,7 +58,12 @@ export function TransactionRowActions({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* The dialog lives outside the menu so it stays mounted after the menu closes. */}
+      {/* The dialogs live outside the menu so they stay mounted after the menu closes. */}
+      <EditTransaction
+        transaction={transaction}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+      />
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent>
           <DialogHeader>

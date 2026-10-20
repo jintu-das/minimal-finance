@@ -5,7 +5,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CreateTransactionForm } from "./create-transaction-form";
+import { TransactionForm } from "./transaction-form";
 
 type CreateTransactionProps = {
   open: boolean;
@@ -26,7 +26,7 @@ export function CreateTransaction({
           </DialogDescription>
         </DialogHeader>
 
-        <CreateTransactionForm onSuccess={() => onOpenChange(false)} />
+        <TransactionForm onSuccess={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
   );

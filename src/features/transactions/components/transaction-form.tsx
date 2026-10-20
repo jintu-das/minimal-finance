@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -27,34 +28,57 @@ import { Spinner } from "@/components/ui/spinner";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { categoriesQueryOptions } from "@/features/categories/api/fetch-categories.api";
 import { useCreateTransaction } from "../api/create-transaction.api";
+import { useUpdateTransaction } from "../api/update-transaction.api";
 import {
   createTransactionFormSchema,
   type CreateTransactionFormInput,
   type CreateTransactionFormValues,
 } from "../schema";
+import type { Transaction } from "../types";
 
-type CreateTransactionFormProps = {
+type TransactionFormProps = {
+  /** When provided, the form edits this transaction instead of creating one. */
+  transaction?: Transaction;
   onSuccess?: () => void;
 };
 
-function today() {
-  const now = new Date();
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-  return now.toISOString().slice(0, 10);
+// Local calendar date (YYYY-MM-DD) for a native date input.
+function toDateInputValue(date: Date) {
+  const local = new Date(date);
+  local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+  return local.toISOString().slice(0, 10);
 }
 
-const defaultValues: CreateTransactionFormInput = {
-  title: "",
-  amount: "",
-  type: "expense",
-  categoryId: "",
-  date: today(),
-};
+function getDefaultValues(
+  transaction?: Transaction,
+): CreateTransactionFormInput {
+  if (!transaction) {
+    return {
+      title: "",
+      amount: "",
+      type: "expense",
+      categoryId: "",
+      date: toDateInputValue(new Date()),
+    };
+  }
+  return {
+    title: transaction.title,
+    amount: String(transaction.amount),
+    type: transaction.type,
+    categoryId: transaction.categoryId,
+    date: toDateInputValue(new Date(transaction.date)),
+  };
+}
 
-export function CreateTransactionForm({
+export function TransactionForm({
+  transaction,
   onSuccess,
-}: CreateTransactionFormProps) {
+}: TransactionFormProps) {
+  const formId = useId();
+  const isEdit = Boolean(transaction);
   const createTransaction = useCreateTransaction();
+  const updateTransaction = useUpdateTransaction();
+  const isPending = createTransaction.isPending || updateTransaction.isPending;
   const categoriesQuery = useQuery(categoriesQueryOptions());
   const form = useForm<
     CreateTransactionFormInput,
@@ -62,7 +86,7 @@ export function CreateTransactionForm({
     CreateTransactionFormValues
   >({
     resolver: zodResolver(createTransactionFormSchema),
-    defaultValues,
+    defaultValues: getDefaultValues(transaction),
   });
 
   const type = useWatch({ control: form.control, name: "type" });
@@ -71,9 +95,16 @@ export function CreateTransactionForm({
   );
 
   function onSubmit(data: CreateTransactionFormValues) {
+    if (transaction) {
+      updateTransaction.mutate(
+        { id: transaction.id, values: data },
+        { onSuccess: () => onSuccess?.() },
+      );
+      return;
+    }
     createTransaction.mutate(data, {
       onSuccess: () => {
-        form.reset({ ...defaultValues, date: today() });
+        form.reset(getDefaultValues());
         onSuccess?.();
       },
     });
@@ -81,10 +112,7 @@ export function CreateTransactionForm({
 
   return (
     <>
-      <form
-        id="create-transaction-form"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
+      <form id={formId} onSubmit={form.handleSubmit(onSubmit)}>
         <FieldGroup>
           <Controller
             name="type"
@@ -215,17 +243,13 @@ export function CreateTransactionForm({
         <Button
           type="button"
           variant="outline"
-          onClick={() => form.reset({ ...defaultValues, date: today() })}
+          onClick={() => form.reset(getDefaultValues(transaction))}
         >
           Reset
         </Button>
-        <Button
-          type="submit"
-          form="create-transaction-form"
-          disabled={createTransaction.isPending}
-        >
-          {createTransaction.isPending && <Spinner data-icon="inline-start" />}
-          Create Transaction
+        <Button type="submit" form={formId} disabled={isPending}>
+          {isPending && <Spinner data-icon="inline-start" />}
+          {isEdit ? "Save Changes" : "Create Transaction"}
         </Button>
       </DialogFooter>
     </>
