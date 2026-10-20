@@ -4,7 +4,15 @@ import {
   type RowData,
   type SortingState,
 } from "@tanstack/react-table";
+import { ReceiptText } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import {
   Table,
   TableBody,
@@ -68,8 +76,19 @@ export function DataTable<TData extends RowData>({
           ))
         ) : (
           <TableRow>
-            <TableCell colSpan={columns.length} className="h-24 text-center">
-              No transactions found.
+            <TableCell colSpan={columns.length} className="whitespace-normal">
+              <Empty>
+                <EmptyHeader>
+                  <EmptyMedia variant="icon">
+                    <ReceiptText />
+                  </EmptyMedia>
+                  <EmptyTitle>No Transactions Found</EmptyTitle>
+                  <EmptyDescription>
+                    Try a different search or filter, or create a new
+                    transaction.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             </TableCell>
           </TableRow>
         )}
