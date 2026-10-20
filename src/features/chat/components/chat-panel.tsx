@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { placeholderMessages } from "../placeholder-data";
 import type { ChatMessage } from "../types";
 import { ChatPromptInput } from "./chat-prompt-input";
+import { ChatSuggestions } from "./chat-suggestions";
 
 function MessageItem({ message }: { message: ChatMessage }) {
   if (message.role === "user") {
@@ -70,7 +71,8 @@ export function ChatPanel({
           ))}
         </div>
 
-        <div className="shrink-0 space-y-3 border-t p-4">
+        <div className="shrink-0  p-4">
+          <ChatSuggestions />
           <ChatPromptInput />
 
           <p className="text-center text-xs text-muted-foreground">
