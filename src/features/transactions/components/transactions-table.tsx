@@ -27,6 +27,7 @@ export function TransactionsTable({
             {netTotal > 0 ? "+" : ""}
             {formatCurrency(netTotal)}
           </TableCell>
+          <TableCell />
         </TableRow>
       }
     />
