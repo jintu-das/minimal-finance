@@ -15,6 +15,7 @@ import type { Category } from "../types";
 import { DeleteCategoryButton } from "./delete-category-button";
 
 export default function CategoryCard(category: Category) {
+  const hasTransactions = category.transactionCount > 0;
   const progress =
     category.budget > 0
       ? Math.min((category.spent / category.budget) * 100, 100)
@@ -22,14 +23,14 @@ export default function CategoryCard(category: Category) {
 
   return (
     <li>
-      <Card size="sm" className="shadow-none border">
+      <Card size="sm" className="shadow-none ring-0">
         <CardHeader>
           <CardTitle>{category.label}</CardTitle>
           <CardDescription>
             {category.spent}/{category.budget}
           </CardDescription>
           <CardAction>
-            <DeleteCategoryButton category={category} />
+            {!hasTransactions && <DeleteCategoryButton category={category} />}
           </CardAction>
         </CardHeader>
         <CardContent>
