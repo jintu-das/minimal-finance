@@ -1,11 +1,10 @@
-import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
-import { ArrowUpIcon, SparklesIcon, SquarePenIcon, XIcon } from "lucide-react";
+import { SparklesIcon, SquarePenIcon, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { placeholderMessages, suggestedPrompts } from "../placeholder-data";
+import { placeholderMessages } from "../placeholder-data";
 import type { ChatMessage } from "../types";
+import { ChatPromptInput } from "./chat-prompt-input";
 
 function MessageItem({ message }: { message: ChatMessage }) {
   if (message.role === "user") {
@@ -35,31 +34,6 @@ export function ChatPanel({
   open: boolean;
   onClose: () => void;
 }) {
-  const [input, setInput] = useState("");
-
-  useEffect(() => {
-    if (!open) return;
-    function handleKeyDown(event: globalThis.KeyboardEvent) {
-      if (event.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, onClose]);
-
-  function handleSubmit(event: FormEvent) {
-    event.preventDefault();
-    if (!input.trim()) return;
-    // TODO: send to chat API
-    setInput("");
-  }
-
-  function handleInputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      event.currentTarget.form?.requestSubmit();
-    }
-  }
-
   return (
     // Stays mounted so it can animate out. Phones slide it over the page;
     // desktop grows its width so the page column narrows smoothly.
@@ -97,37 +71,8 @@ export function ChatPanel({
         </div>
 
         <div className="shrink-0 space-y-3 border-t p-4">
-          <div className="flex flex-wrap gap-2">
-            {suggestedPrompts.map((prompt) => (
-              <Button
-                key={prompt}
-                variant="outline"
-                size="sm"
-                onClick={() => setInput(prompt)}
-              >
-                {prompt}
-              </Button>
-            ))}
-          </div>
-          <form onSubmit={handleSubmit} className="flex items-end gap-2">
-            <Textarea
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              onKeyDown={handleInputKeyDown}
-              placeholder="Ask about your spending..."
-              aria-label="Message"
-              className="max-h-40 min-h-10 py-2"
-              rows={1}
-            />
-            <Button
-              type="submit"
-              size="icon"
-              aria-label="Send message"
-              disabled={!input.trim()}
-            >
-              <ArrowUpIcon />
-            </Button>
-          </form>
+          <ChatPromptInput />
+
           <p className="text-center text-xs text-muted-foreground">
             AI responses are placeholders.
           </p>
