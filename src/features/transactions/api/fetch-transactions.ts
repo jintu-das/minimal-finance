@@ -1,12 +1,13 @@
-import { apiGet } from "@/lib/api-get";
+import api from "@/lib/api";
 import { queryOptions } from "@tanstack/react-query";
 import { transactionKeys } from "../query-keys";
 import type { Transaction, TransactionFilters } from "../types";
 
-function fetchTransactions({ type, search }: TransactionFilters) {
-  return apiGet<Array<Transaction>>("/transactions", {
+async function fetchTransactions({ type, search }: TransactionFilters) {
+  const { data } = await api.get<Array<Transaction>>("/transactions", {
     params: { type, search },
   });
+  return data;
 }
 
 export const transactionsQueryOptions = (filters: TransactionFilters = {}) =>

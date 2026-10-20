@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { describe, expect, it } from "vitest";
-import { getApiErrorMessage, unwrapEnvelope } from "./api-types";
+import { getApiErrorMessage, unwrapResponse } from "./api-types";
 
 const withResponse = (data: unknown, status = 400) =>
   new AxiosError("fail", "ERR_BAD_REQUEST", undefined, undefined, {
@@ -54,19 +54,28 @@ describe("getApiErrorMessage", () => {
   });
 });
 
-describe("unwrapEnvelope", () => {
-  const wrap = (data: unknown) => ({ data }) as never;
+describe("unwrapResponse", () => {
+  const response = (data: unknown, status = 200) => ({ data, status }) as never;
 
-  it("returns the envelope payload", () => {
-    expect(
-      unwrapEnvelope(wrap({ success: true, data: [1, 2], meta: {} })),
-    ).toEqual([1, 2]);
+  it("moves the payload to data and meta onto the response", () => {
+    const meta = { timestamp: "t", count: 2 };
+    const result = unwrapResponse(
+      response({ success: true, data: [1, 2], meta }),
+    );
+    expect(result.data).toEqual([1, 2]);
+    expect(result.meta).toEqual(meta);
+  });
+
+  it("passes empty bodies through", () => {
+    expect(unwrapResponse(response(undefined, 204)).data).toBeUndefined();
+    expect(unwrapResponse(response("")).data).toBe("");
   });
 
   it("rejects bodies that are not an envelope", () => {
-    expect(() => unwrapEnvelope(wrap([1, 2]))).toThrow(/unexpected response/);
-    expect(() => unwrapEnvelope(wrap("<html></html>"))).toThrow();
-    expect(() => unwrapEnvelope(wrap(undefined))).toThrow();
-    expect(() => unwrapEnvelope(wrap({ success: true }))).toThrow();
+    expect(() => unwrapResponse(response([1, 2]))).toThrow(
+      /unexpected response/,
+    );
+    expect(() => unwrapResponse(response("<html></html>"))).toThrow();
+    expect(() => unwrapResponse(response({ success: true }))).toThrow();
   });
 });

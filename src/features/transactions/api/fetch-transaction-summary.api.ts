@@ -1,12 +1,13 @@
-import { apiGet } from "@/lib/api-get";
+import api from "@/lib/api";
 import { queryOptions } from "@tanstack/react-query";
 import { transactionKeys } from "../query-keys";
 import type { TransactionSummary, TransactionSummaryParams } from "../types";
 
-function fetchTransactionSummary({ from, to }: TransactionSummaryParams) {
-  return apiGet<TransactionSummary>("/transactions/summary", {
+async function fetchTransactionSummary({ from, to }: TransactionSummaryParams) {
+  const { data } = await api.get<TransactionSummary>("/transactions/summary", {
     params: { from, to },
   });
+  return data;
 }
 
 export const transactionSummaryQueryOptions = (

@@ -1,10 +1,13 @@
 import { queryOptions } from "@tanstack/react-query";
-import { apiGet } from "@/lib/api-get";
+import api from "@/lib/api";
 import { categoriesKeys } from "../query-keys";
 import type { CategoriesFilters, Category } from "../types";
 
-function fetchCategories({ search }: CategoriesFilters) {
-  return apiGet<Array<Category>>("/categories", { params: { search } });
+async function fetchCategories({ search }: CategoriesFilters) {
+  const { data } = await api.get<Array<Category>>("/categories", {
+    params: { search },
+  });
+  return data;
 }
 
 export const categoriesQueryOptions = (filters: CategoriesFilters = {}) =>

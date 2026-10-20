@@ -6,18 +6,14 @@ import { transactionSummaryQueryOptions } from "./fetch-transaction-summary.api"
 
 vi.mock("@/lib/api", () => ({ default: { get: vi.fn(), post: vi.fn() } }));
 
-const meta = { timestamp: "2026-10-19T09:30:00.000Z" };
-
 describe("transactions fetchers", () => {
   beforeEach(() => {
     vi.mocked(api.get).mockReset();
   });
 
-  it("unwraps the transactions list envelope", async () => {
+  it("fetches the transactions list", async () => {
     const rows = [{ id: "1" }];
-    vi.mocked(api.get).mockResolvedValue({
-      data: { success: true, data: rows, meta: { ...meta, count: 1 } },
-    });
+    vi.mocked(api.get).mockResolvedValue({ data: rows });
 
     const data = await new QueryClient().ensureQueryData(
       transactionsQueryOptions({ type: "expense", search: "a" }),
@@ -29,11 +25,9 @@ describe("transactions fetchers", () => {
     expect(data).toEqual(rows);
   });
 
-  it("unwraps the summary envelope", async () => {
+  it("fetches the summary", async () => {
     const summary = { income: 1, expense: 2 };
-    vi.mocked(api.get).mockResolvedValue({
-      data: { success: true, data: summary, meta },
-    });
+    vi.mocked(api.get).mockResolvedValue({ data: summary });
 
     const data = await new QueryClient().ensureQueryData(
       transactionSummaryQueryOptions({ from: "a", to: "b" }),
@@ -43,13 +37,5 @@ describe("transactions fetchers", () => {
       params: { from: "a", to: "b" },
     });
     expect(data).toEqual(summary);
-  });
-
-  it("errors when the body is not an envelope", async () => {
-    vi.mocked(api.get).mockResolvedValue({ data: [] });
-
-    await expect(
-      new QueryClient().ensureQueryData(transactionsQueryOptions()),
-    ).rejects.toThrow(/unexpected response/);
   });
 });

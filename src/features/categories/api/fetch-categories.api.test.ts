@@ -19,13 +19,7 @@ const categories: Array<Category> = [
   },
 ];
 
-const envelope = {
-  data: {
-    success: true,
-    data: categories,
-    meta: { timestamp: "2026-10-19T09:30:00.000Z", count: categories.length },
-  },
-};
+const response = { data: categories };
 
 describe("categoriesQueryOptions", () => {
   beforeEach(() => {
@@ -46,7 +40,7 @@ describe("categoriesQueryOptions", () => {
   });
 
   it("fetches /categories and unwraps the axios response", async () => {
-    vi.mocked(api.get).mockResolvedValue(envelope);
+    vi.mocked(api.get).mockResolvedValue(response);
     const queryClient = new QueryClient();
     const options = categoriesQueryOptions();
 
@@ -59,7 +53,7 @@ describe("categoriesQueryOptions", () => {
   });
 
   it("sends the search term as a query param", async () => {
-    vi.mocked(api.get).mockResolvedValue(envelope);
+    vi.mocked(api.get).mockResolvedValue(response);
     const queryClient = new QueryClient();
 
     await queryClient.ensureQueryData(
