@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/common/page-header";
 import { categoriesQueryOptions } from "@/features/categories/api/fetch-categories.api";
 import { CategoriesFilter } from "@/features/categories/components/categories-filter";
 import { CategoriesList } from "@/features/categories/components/categories-list";
@@ -22,6 +23,10 @@ function RouteComponent() {
 
   return (
     <main className="container mx-auto space-y-8 pt-8">
+      <PageHeader
+        title="Categories"
+        description="Organise your spending and set monthly budgets."
+      />
       <CategoriesFilter />
       <CategoriesList categories={categories} />
     </main>

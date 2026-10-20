@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/common/page-header";
 import { Separator } from "@/components/ui/separator";
 import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
 import { transactionSummaryQueryOptions } from "@/features/transactions/api/fetch-transaction-summary.api";
@@ -38,6 +39,10 @@ function Index() {
 
   return (
     <main className="container mx-auto space-y-8 pt-8">
+      <PageHeader
+        title="Transactions"
+        description="Track and manage your income and expenses."
+      />
       <AiInsight />
       <TransactionHeader />
       <Separator />

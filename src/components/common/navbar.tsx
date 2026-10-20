@@ -3,6 +3,11 @@ import { ModeToggle } from "./mode-toggle";
 
 const menuItems = [
   {
+    id: 0,
+    title: "Dashboard",
+    to: "/dashboard",
+  },
+  {
     id: 1,
     title: "Transactions",
     to: "/",
