@@ -2,15 +2,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/query-client";
 import { Toaster } from "@/components/ui/sonner";
 import "./index.css";
 import { ThemeProvider } from "./providers/theme-provider";
 import { NotFoundComponent } from "./components/common/not-found";
 import { ErrorComponent } from "./components/common/error";
-
-// Create a client
-const queryClient = new QueryClient();
 
 // Create a new router instance
 const router = createRouter({

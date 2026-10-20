@@ -4,21 +4,9 @@ import {
   useRouter,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { isAxiosError } from "axios";
 import { HomeIcon, RefreshCwIcon } from "lucide-react";
+import { getApiErrorMessage } from "@/lib/api-types";
 import { Button } from "../ui/button";
-
-function getMessage(error: unknown) {
-  if (isAxiosError(error)) {
-    if (!error.response) {
-      return "We could not reach the server. Check your connection and try again.";
-    }
-    const message = error.response.data?.message;
-    if (typeof message === "string") return message;
-    if (Array.isArray(message)) return message.join(", ");
-  }
-  return "An unexpected error occurred while loading this page.";
-}
 
 export function ErrorComponent({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
@@ -43,7 +31,10 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
           Something went wrong
         </h1>
         <p className="mx-auto max-w-md text-sm text-muted-foreground">
-          {getMessage(error)}
+          {getApiErrorMessage(
+            error,
+            "An unexpected error occurred while loading this page.",
+          )}
         </p>
       </div>
       <div className="flex flex-col gap-3 sm:flex-row">

@@ -14,8 +14,18 @@ const categories: Array<Category> = [
     label: "Salary",
     type: "income",
     updatedAt: "2026-01-01T00:00:00.000Z",
+    spent: 0,
+    transactionCount: 0,
   },
 ];
+
+const envelope = {
+  data: {
+    success: true,
+    data: categories,
+    meta: { timestamp: "2026-10-19T09:30:00.000Z", count: categories.length },
+  },
+};
 
 describe("categoriesQueryOptions", () => {
   beforeEach(() => {
@@ -36,7 +46,7 @@ describe("categoriesQueryOptions", () => {
   });
 
   it("fetches /categories and unwraps the axios response", async () => {
-    vi.mocked(api.get).mockResolvedValue({ data: categories });
+    vi.mocked(api.get).mockResolvedValue(envelope);
     const queryClient = new QueryClient();
     const options = categoriesQueryOptions();
 
@@ -45,15 +55,16 @@ describe("categoriesQueryOptions", () => {
     expect(api.get).toHaveBeenCalledWith("/categories", {
       params: { search: undefined },
     });
-    expect(options.select?.({ data: categories } as never)).toEqual(categories);
-    expect(data).toBeDefined();
+    expect(data).toEqual(categories);
   });
 
   it("sends the search term as a query param", async () => {
-    vi.mocked(api.get).mockResolvedValue({ data: categories });
+    vi.mocked(api.get).mockResolvedValue(envelope);
     const queryClient = new QueryClient();
 
-    await queryClient.ensureQueryData(categoriesQueryOptions({ search: "sal" }));
+    await queryClient.ensureQueryData(
+      categoriesQueryOptions({ search: "sal" }),
+    );
 
     expect(api.get).toHaveBeenCalledWith("/categories", {
       params: { search: "sal" },
