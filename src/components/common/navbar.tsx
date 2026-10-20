@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { CreateMenu } from "./create-menu";
 import { ModeToggle } from "./mode-toggle";
 
 const menuItems = [
@@ -31,7 +30,6 @@ export function AppNavbar() {
           ))}
         </div>
 
-        <CreateMenu />
         <ModeToggle />
         {/* <Button size="icon" variant="secondary">
           <MoonIcon />

@@ -7,7 +7,9 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { TransactionType } from "../types";
 import { useEffect, useState } from "react";
 import { getRouteApi } from "@tanstack/react-router";
-import { SearchIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CreateTransaction } from "./create-transaction";
 
 const route = getRouteApi("/");
 
@@ -15,6 +17,7 @@ export function TransactionFilter() {
   const { type, search } = route.useSearch();
   const navigate = route.useNavigate();
   const [input, setInput] = useState(search ?? "");
+  const [createOpen, setCreateOpen] = useState(false);
 
   useEffect(() => {
     const next = input.trim() || undefined;
@@ -54,17 +57,23 @@ export function TransactionFilter() {
         </TabsList>
       </Tabs>
 
-      <InputGroup className="max-w-xs">
-        <InputGroupInput
-          type="search"
-          placeholder="Search by title..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-        />
-        <InputGroupAddon>
-          <SearchIcon />
-        </InputGroupAddon>
-      </InputGroup>
+      <div className="flex items-center gap-2">
+        <InputGroup className="max-w-xs">
+          <InputGroupInput
+            type="search"
+            placeholder="Search by title..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
+          <InputGroupAddon>
+            <SearchIcon />
+          </InputGroupAddon>
+        </InputGroup>
+        <Button onClick={() => setCreateOpen(true)} size="icon">
+          <PlusIcon />
+        </Button>
+      </div>
+      <CreateTransaction open={createOpen} onOpenChange={setCreateOpen} />
     </section>
   );
 }
