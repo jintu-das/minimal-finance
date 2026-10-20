@@ -6,9 +6,8 @@ export function CategoriesList({
 }: {
   categories: Array<Category>;
 }) {
-  console.log({ categories });
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-x-12 gap-y-4">
+    <ul className="grid grid-cols-1 md:grid-cols-2 grid-flow-row gap-6">
       {categories?.map((category) => (
         <CategoryCard key={category.id} {...category} />
       ))}

@@ -28,9 +28,11 @@ export function getApiErrorMessage(error: unknown, fallback: string) {
   // Only 4xx messages are written for users; 5xx bodies can leak internals.
   const { status, data } = error.response;
   if (status < 400 || status >= 500) return fallback;
+
   const message = data?.message;
   if (typeof message === "string" && message) return message;
   if (Array.isArray(message) && message.length) return message.join(", ");
+
   return fallback;
 }
 
