@@ -50,7 +50,7 @@ export function TransactionFilter() {
         }
         className="min-w-0 flex-1"
       >
-        <TabsList variant="line">
+        <TabsList>
           <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="income">Inflow</TabsTrigger>
           <TabsTrigger value="expense">Outflow</TabsTrigger>
