@@ -13,7 +13,7 @@ describe("createTransactionFormSchema", () => {
   it("coerces amount and converts the date to an ISO timestamp", () => {
     const result = createTransactionFormSchema.parse(valid);
     expect(result.amount).toBe(42.5);
-    expect(result.date).toBe(new Date("2026-10-17T00:00:00").toISOString());
+    expect(result.date).toBe("2026-10-17T00:00:00.000Z");
   });
 
   it("trims the title and rejects a blank one", () => {

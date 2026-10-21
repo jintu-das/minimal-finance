@@ -1,8 +1,11 @@
 import { useId } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { DialogFooter } from "@/components/ui/dialog";
 import {
   Field,
@@ -17,6 +20,11 @@ import {
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -49,6 +57,11 @@ function toDateInputValue(date: Date) {
   return local.toISOString().slice(0, 10);
 }
 
+// Parses a YYYY-MM-DD value as local midnight (not UTC) for the calendar.
+function fromDateInputValue(value: string) {
+  return new Date(`${value}T00:00:00`);
+}
+
 function getDefaultValues(
   transaction?: Transaction,
 ): CreateTransactionFormInput {
@@ -66,7 +79,8 @@ function getDefaultValues(
     amount: String(transaction.amount),
     type: transaction.type,
     categoryId: transaction.categoryId,
-    date: toDateInputValue(new Date(transaction.date)),
+    // Stored as UTC midnight, so the UTC date is the calendar day.
+    date: new Date(transaction.date).toISOString().slice(0, 10),
   };
 }
 
@@ -225,12 +239,43 @@ export function TransactionForm({
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="transaction-date">Date</FieldLabel>
-                <Input
-                  {...field}
-                  id="transaction-date"
-                  type="date"
-                  aria-invalid={fieldState.invalid}
-                />
+                <Popover>
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        id="transaction-date"
+                        type="button"
+                        variant="outline"
+                        aria-invalid={fieldState.invalid}
+                        onBlur={field.onBlur}
+                        className="w-full justify-start font-normal"
+                      />
+                    }
+                  >
+                    <CalendarIcon aria-hidden="true" />
+                    {field.value
+                      ? format(fromDateInputValue(field.value), "PPP")
+                      : "Pick a date"}
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={
+                        field.value
+                          ? fromDateInputValue(field.value)
+                          : undefined
+                      }
+                      defaultMonth={
+                        field.value
+                          ? fromDateInputValue(field.value)
+                          : undefined
+                      }
+                      onSelect={(date) =>
+                        field.onChange(date ? toDateInputValue(date) : "")
+                      }
+                    />
+                  </PopoverContent>
+                </Popover>
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}

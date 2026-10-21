@@ -10,7 +10,9 @@ export const createTransactionFormSchema = z.object({
   date: z
     .string()
     .min(1, "Select a date.")
-    .transform((value) => new Date(`${value}T00:00:00`).toISOString()),
+    // A calendar day, stored as UTC midnight so it reads back as the same day
+    // everywhere (dates are displayed in UTC).
+    .transform((value) => new Date(`${value}T00:00:00Z`).toISOString()),
 });
 
 export type CreateTransactionFormInput = z.input<
