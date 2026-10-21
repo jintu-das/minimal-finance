@@ -15,7 +15,7 @@ function RouteComponent() {
   return (
     <main className="container mx-auto space-y-6 px-4 py-8">
       <PageHeader
-        title="Dashboard"
+        title="Analytics"
         description="Your finances for October 2026."
       />
 
