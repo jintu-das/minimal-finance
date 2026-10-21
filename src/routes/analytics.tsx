@@ -6,7 +6,7 @@ import { CashFlowChart } from "@/features/dashboard/components/cash-flow-chart";
 import { RecentTransactions } from "@/features/dashboard/components/recent-transactions";
 import { SummaryCards } from "@/features/dashboard/components/summary-cards";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/analytics")({
   component: RouteComponent,
 });
 
