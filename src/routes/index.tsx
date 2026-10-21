@@ -1,10 +1,8 @@
 import { PageHeader } from "@/components/common/page-header";
 import { Separator } from "@/components/ui/separator";
 import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
-import { transactionSummaryQueryOptions } from "@/features/transactions/api/fetch-transaction-summary.api";
 import { AiInsight } from "@/features/transactions/components/ai-insight";
 import { TransactionFilter } from "@/features/transactions/components/transaction-filter";
-import { TransactionHeader } from "@/features/transactions/components/transaction-header";
 import { TransactionsTable } from "@/features/transactions/components/transactions-table";
 import type { TransactionFilters } from "@/features/transactions/types";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -23,10 +21,7 @@ export const Route = createFileRoute("/")({
   }),
   loaderDeps: ({ search: { type, search } }) => ({ type, search }),
   loader: ({ context: { queryClient }, deps }) =>
-    Promise.all([
-      queryClient.ensureQueryData(transactionsQueryOptions(deps)),
-      queryClient.ensureQueryData(transactionSummaryQueryOptions()),
-    ]),
+    queryClient.ensureQueryData(transactionsQueryOptions(deps)),
   component: Index,
 });
 
@@ -44,7 +39,6 @@ function Index() {
         description="Track and manage your income and expenses."
       />
       <AiInsight />
-      <TransactionHeader />
       <Separator />
       <TransactionFilter />
       <TransactionsTable transactions={transactions} />
