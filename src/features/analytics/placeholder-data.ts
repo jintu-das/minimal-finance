@@ -1,24 +1,11 @@
 import type {
   CategorySpending,
-  DashboardInsight,
+  AnalyticsInsight,
   MonthlyCashFlow,
   RecentTransaction,
 } from "./types";
 
-// Static data shown until the dashboard API exists.
-export const dashboardSummary = {
-  balance: 184250,
-  income: 92000,
-  expense: 61840,
-  savingsRate: 32.8,
-  change: {
-    balance: 8.4,
-    income: 2.1,
-    expense: 12.3,
-    savingsRate: -4.6,
-  },
-};
-
+// Static data shown until the analytics API exists.
 export const monthlyCashFlow: Array<MonthlyCashFlow> = [
   { month: "May", income: 88000, expense: 54200 },
   { month: "Jun", income: 88000, expense: 58900 },
@@ -36,7 +23,7 @@ export const categorySpending: Array<CategorySpending> = [
   { id: "5", label: "Transport", spent: 3900, budget: 6000 },
 ];
 
-export const dashboardInsights: Array<DashboardInsight> = [
+export const analyticsInsights: Array<AnalyticsInsight> = [
   {
     id: "1",
     tone: "warning",

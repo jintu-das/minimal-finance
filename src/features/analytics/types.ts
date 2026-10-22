@@ -13,7 +13,7 @@ export type CategorySpending = {
 
 export type InsightTone = "warning" | "positive" | "tip";
 
-export type DashboardInsight = {
+export type AnalyticsInsight = {
   id: string;
   tone: InsightTone;
   title: string;
@@ -27,4 +27,15 @@ export type RecentTransaction = {
   date: string;
   amount: number;
   type: "income" | "expense";
+};
+
+export type AnalyticsRange = {
+  from: string;
+  to: string;
+};
+
+export type AnalyticsSummary = AnalyticsRange & {
+  totalEarned: number;
+  totalSpent: number;
+  netPosition: number;
 };

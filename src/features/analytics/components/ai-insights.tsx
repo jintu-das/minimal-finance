@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { dashboardInsights } from "../placeholder-data";
+import { analyticsInsights } from "../placeholder-data";
 import type { InsightTone } from "../types";
 
 const toneStyles: Record<
@@ -48,7 +48,7 @@ export function AiInsights() {
       </CardHeader>
       <CardContent>
         <ul className="grid gap-4 md:grid-cols-3">
-          {dashboardInsights.map((insight) => {
+          {analyticsInsights.map((insight) => {
             const tone = toneStyles[insight.tone];
             const Icon = tone.icon;
 
