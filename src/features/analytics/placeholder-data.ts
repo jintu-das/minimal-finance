@@ -2,7 +2,6 @@ import type {
   CategorySpending,
   AnalyticsInsight,
   MonthlyCashFlow,
-  RecentTransaction,
 } from "./types";
 
 // Static data shown until the analytics API exists.
@@ -43,48 +42,5 @@ export const analyticsInsights: Array<AnalyticsInsight> = [
     title: "Move ₹5,000 to savings",
     description:
       "You're on pace to end October ₹30,000 under. Saving ₹5,000 now still leaves a buffer.",
-  },
-];
-
-export const recentTransactions: Array<RecentTransaction> = [
-  {
-    id: "1",
-    title: "Salary",
-    category: "Income",
-    date: "2026-10-18",
-    amount: 92000,
-    type: "income",
-  },
-  {
-    id: "2",
-    title: "Weekend dinner",
-    category: "Dining",
-    date: "2026-10-18",
-    amount: 2400,
-    type: "expense",
-  },
-  {
-    id: "3",
-    title: "Weekly groceries",
-    category: "Groceries",
-    date: "2026-10-17",
-    amount: 3150,
-    type: "expense",
-  },
-  {
-    id: "4",
-    title: "Metro card top-up",
-    category: "Transport",
-    date: "2026-10-16",
-    amount: 1000,
-    type: "expense",
-  },
-  {
-    id: "5",
-    title: "Running shoes",
-    category: "Shopping",
-    date: "2026-10-15",
-    amount: 4800,
-    type: "expense",
   },
 ];

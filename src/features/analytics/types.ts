@@ -20,15 +20,6 @@ export type AnalyticsInsight = {
   description: string;
 };
 
-export type RecentTransaction = {
-  id: string;
-  title: string;
-  category: string;
-  date: string;
-  amount: number;
-  type: "income" | "expense";
-};
-
 export type AnalyticsRange = {
   from: string;
   to: string;

@@ -9,6 +9,7 @@ import { RecentTransactions } from "@/features/analytics/components/recent-trans
 import { SummaryCards } from "@/features/analytics/components/summary-cards";
 import { analyticsSummaryQueryOptions } from "@/features/analytics/api/fetch-analytics-summary.api";
 import { monthToDateRanges } from "@/features/analytics/date-range";
+import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
 
 export const Route = createFileRoute("/analytics")({
   loader: async ({ context: { queryClient } }) => {
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/analytics")({
       queryClient.ensureQueryData(
         analyticsSummaryQueryOptions(ranges.previous),
       ),
+      // Shares the cache with the unfiltered transactions page.
+      queryClient.ensureQueryData(transactionsQueryOptions()),
     ]);
     return ranges;
   },
@@ -33,6 +36,11 @@ function RouteComponent() {
   const { data: previous } = useSuspenseQuery(
     analyticsSummaryQueryOptions(ranges.previous),
   );
+  // The API returns transactions newest first.
+  const { data: recentTransactions } = useSuspenseQuery({
+    ...transactionsQueryOptions(),
+    select: (transactions) => transactions.slice(0, 5),
+  });
 
   return (
     <main className="container mx-auto space-y-6 px-4 py-8">
@@ -47,7 +55,7 @@ function RouteComponent() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <CashFlowChart />
-        <RecentTransactions />
+        <RecentTransactions transactions={recentTransactions} />
       </div>
 
       <BudgetOverview />
