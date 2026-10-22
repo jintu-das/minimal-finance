@@ -6,7 +6,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { getRouteApi } from "@tanstack/react-router";
 import { PlusIcon, SearchIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 import { CreateCategory } from "./create-category";
 
 const route = getRouteApi("/categories");
@@ -17,19 +18,12 @@ export function CategoriesFilter() {
   const [input, setInput] = useState(search ?? "");
   const [createOpen, setCreateOpen] = useState(false);
 
-  useEffect(() => {
-    const next = input.trim() || undefined;
-    if (next === search) return;
-    const timeout = setTimeout(
-      () =>
-        navigate({
-          search: (prev) => ({ ...prev, search: next }),
-          replace: true,
-        }),
-      300,
-    );
-    return () => clearTimeout(timeout);
-  }, [input, search, navigate]);
+  const updateSearch = useDebouncedCallback((value: string) => {
+    navigate({
+      search: (prev) => ({ ...prev, search: value.trim() || undefined }),
+      replace: true,
+    });
+  }, 300);
 
   return (
     <section
@@ -41,7 +35,10 @@ export function CategoriesFilter() {
           type="search"
           placeholder="Search by name..."
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => {
+            setInput(e.target.value);
+            updateSearch(e.target.value);
+          }}
         />
         <InputGroupAddon>
           <SearchIcon />
