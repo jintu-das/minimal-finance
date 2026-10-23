@@ -21,7 +21,7 @@ export function BudgetOverview() {
         <CardDescription>Spending against this month's budgets</CardDescription>
       </CardHeader>
       <CardContent>
-        <ul className="grid gap-x-10 gap-y-5 md:grid-cols-2">
+        <ul className="grid gap-x-10 gap-y-5 md:grid-cols-1">
           {categorySpending.map((category) => {
             const percent = Math.round(
               (category.spent / category.budget) * 100,

@@ -10,6 +10,7 @@ import { SummaryCards } from "@/features/analytics/components/summary-cards";
 import { analyticsSummaryQueryOptions } from "@/features/analytics/api/fetch-analytics-summary.api";
 import { monthToDateRanges } from "@/features/analytics/date-range";
 import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
+import { SpendByCategoryChart } from "@/features/analytics/components/spend-by-category-chart";
 
 export const Route = createFileRoute("/analytics")({
   loader: async ({ context: { queryClient } }) => {
@@ -55,10 +56,13 @@ function RouteComponent() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         <CashFlowChart />
+        <SpendByCategoryChart />
         <RecentTransactions transactions={recentTransactions} />
+        <BudgetOverview />
       </div>
 
-      <BudgetOverview />
+      {/* <div className="grid gap-6 lg:grid-cols-2">
+      </div> */}
     </main>
   );
 }
