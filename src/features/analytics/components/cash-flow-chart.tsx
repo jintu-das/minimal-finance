@@ -10,11 +10,10 @@ import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils";
 import { monthlyCashFlow } from "../placeholder-data";
 
-// Validated pair (teal-600 / orange-600): passes CVD and contrast checks in
-// both light and dark mode.
+// Series colors come from the theme's predefined chart tokens in index.css.
 const series = [
-  { key: "income", label: "Income", className: "bg-teal-600" },
-  { key: "expense", label: "Expenses", className: "bg-orange-600" },
+  { key: "income", label: "Income", className: "bg-chart-1" },
+  { key: "expense", label: "Expenses", className: "bg-chart-2" },
 ] as const;
 
 const ticks = [0, 25000, 50000, 75000, 100000];

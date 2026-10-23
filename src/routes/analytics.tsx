@@ -44,7 +44,7 @@ function RouteComponent() {
   });
 
   return (
-    <main className="container mx-auto space-y-6 px-4 py-8">
+    <main className="container mx-auto space-y-8 pt-8">
       <PageHeader
         title="Analytics"
         description={`Your finances for ${format(new Date(ranges.current.from), "MMMM yyyy")}.`}
@@ -60,9 +60,6 @@ function RouteComponent() {
         <RecentTransactions transactions={recentTransactions} />
         <BudgetOverview />
       </div>
-
-      {/* <div className="grid gap-6 lg:grid-cols-2">
-      </div> */}
     </main>
   );
 }
