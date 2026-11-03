@@ -1,22 +1,11 @@
-import { useQueryErrorResetBoundary } from "@tanstack/react-query";
-import {
-  Link,
-  useRouter,
-  type ErrorComponentProps,
-} from "@tanstack/react-router";
+import { Link, type ErrorComponentProps } from "@tanstack/react-router";
 import { HomeIcon, RefreshCwIcon } from "lucide-react";
 import { getApiErrorMessage } from "@/lib/api-types";
 import { Button } from "../ui/button";
+import { useRouteRetry } from "./use-route-retry";
 
 export function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  const router = useRouter();
-  const queryErrorResetBoundary = useQueryErrorResetBoundary();
-
-  const retry = () => {
-    queryErrorResetBoundary.reset();
-    reset();
-    void router.invalidate();
-  };
+  const retry = useRouteRetry(reset);
 
   return (
     <main

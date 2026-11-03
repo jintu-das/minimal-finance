@@ -10,6 +10,7 @@ import { SummaryCards } from "@/features/analytics/components/summary-cards";
 import { analyticsSummaryQueryOptions } from "@/features/analytics/api/fetch-analytics-summary.api";
 import { monthToDateRanges } from "@/features/analytics/date-range";
 import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
+import { resolveTransactionFilters } from "@/features/transactions/month";
 import { SpendByCategoryChart } from "@/features/analytics/components/spend-by-category-chart";
 
 export const Route = createFileRoute("/analytics")({
@@ -20,8 +21,11 @@ export const Route = createFileRoute("/analytics")({
       queryClient.ensureQueryData(
         analyticsSummaryQueryOptions(ranges.previous),
       ),
-      // Shares the cache with the unfiltered transactions page.
-      queryClient.ensureQueryData(transactionsQueryOptions()),
+      // The current month's list, shared with the transactions page's default
+      // view, instead of the whole history just to show five rows.
+      queryClient.ensureQueryData(
+        transactionsQueryOptions(resolveTransactionFilters({})),
+      ),
     ]);
     return ranges;
   },
@@ -39,8 +43,8 @@ function RouteComponent() {
   );
   // The API returns transactions newest first.
   const { data: recentTransactions } = useSuspenseQuery({
-    ...transactionsQueryOptions(),
-    select: (transactions) => transactions.slice(0, 5),
+    ...transactionsQueryOptions(resolveTransactionFilters({})),
+    select: ({ transactions }) => transactions.slice(0, 5),
   });
 
   return (

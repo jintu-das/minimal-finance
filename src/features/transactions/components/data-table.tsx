@@ -30,6 +30,7 @@ interface DataTableProps<TData extends RowData> {
   data: TData[];
   caption?: string;
   footer?: ReactNode;
+  emptyTitle?: string;
 }
 
 export function DataTable<TData extends RowData>({
@@ -37,6 +38,7 @@ export function DataTable<TData extends RowData>({
   data,
   caption,
   footer,
+  emptyTitle = "No Transactions Found",
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const table = useTable({
@@ -82,7 +84,7 @@ export function DataTable<TData extends RowData>({
                   <EmptyMedia variant="icon">
                     <ReceiptText />
                   </EmptyMedia>
-                  <EmptyTitle>No Transactions Found</EmptyTitle>
+                  <EmptyTitle>{emptyTitle}</EmptyTitle>
                   <EmptyDescription>
                     Try a different search or filter, or create a new
                     transaction.

@@ -28,7 +28,24 @@ export type TransactionSummaryParams = {
 
 export type TransactionType =Transaction["type"];
 
+// Totals the API returns in the list envelope `meta`, for the same filters.
+export type TransactionListSummary = {
+  count: number;
+  inflow: number;
+  outflow: number;
+  net: number;
+};
+
+export type TransactionList = {
+  transactions: Array<Transaction>;
+  summary: TransactionListSummary;
+};
+
+// `month` (yyyy-MM) and `from`/`to` (yyyy-MM-dd) are mutually exclusive.
 export type TransactionFilters = {
   type?: TransactionType;
   search?: string;
+  month?: string;
+  from?: string;
+  to?: string;
 };

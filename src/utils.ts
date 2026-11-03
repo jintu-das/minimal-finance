@@ -8,7 +8,8 @@ const date = new Intl.DateTimeFormat("en-IN", {
   day: "2-digit",
   month: "short",
   year: "2-digit",
-  timeZone: "UTC",
+  // Matches the IST month the API filtered the row into.
+  timeZone: "Asia/Kolkata",
 });
 
 export function formatDate(dateString: string): string {

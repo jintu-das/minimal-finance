@@ -37,6 +37,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { categoriesQueryOptions } from "@/features/categories/api/fetch-categories.api";
 import { useCreateTransaction } from "../api/create-transaction.api";
 import { useUpdateTransaction } from "../api/update-transaction.api";
+import { istDay, istToday, parseDay, toDay } from "../month";
 import {
   createTransactionFormSchema,
   type CreateTransactionFormInput,
@@ -50,18 +51,6 @@ type TransactionFormProps = {
   onSuccess?: () => void;
 };
 
-// Local calendar date (YYYY-MM-DD) for a native date input.
-function toDateInputValue(date: Date) {
-  const local = new Date(date);
-  local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
-  return local.toISOString().slice(0, 10);
-}
-
-// Parses a YYYY-MM-DD value as local midnight (not UTC) for the calendar.
-function fromDateInputValue(value: string) {
-  return new Date(`${value}T00:00:00`);
-}
-
 function getDefaultValues(
   transaction?: Transaction,
 ): CreateTransactionFormInput {
@@ -71,7 +60,7 @@ function getDefaultValues(
       amount: "",
       type: "expense",
       categoryId: "",
-      date: toDateInputValue(new Date()),
+      date: istDay(new Date()),
     };
   }
   return {
@@ -79,8 +68,8 @@ function getDefaultValues(
     amount: String(transaction.amount),
     type: transaction.type,
     categoryId: transaction.categoryId,
-    // Stored as UTC midnight, so the UTC date is the calendar day.
-    date: new Date(transaction.date).toISOString().slice(0, 10),
+    // The IST day, matching the table and the month the row is filtered into.
+    date: istDay(transaction.date),
   };
 }
 
@@ -254,24 +243,25 @@ export function TransactionForm({
                   >
                     <CalendarIcon aria-hidden="true" />
                     {field.value
-                      ? format(fromDateInputValue(field.value), "PPP")
+                      ? format(parseDay(field.value), "PPP")
                       : "Pick a date"}
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
+                      today={istToday()}
                       selected={
                         field.value
-                          ? fromDateInputValue(field.value)
+                          ? parseDay(field.value)
                           : undefined
                       }
                       defaultMonth={
                         field.value
-                          ? fromDateInputValue(field.value)
+                          ? parseDay(field.value)
                           : undefined
                       }
                       onSelect={(date) =>
-                        field.onChange(date ? toDateInputValue(date) : "")
+                        field.onChange(date ? toDay(date) : "")
                       }
                     />
                   </PopoverContent>

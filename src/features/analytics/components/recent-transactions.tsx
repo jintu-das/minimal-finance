@@ -22,7 +22,7 @@ export function RecentTransactions({
     <Card className="border-0 shadow-none ring-1 ring-border">
       <CardHeader>
         <CardTitle>Recent transactions</CardTitle>
-        <CardDescription>Your latest activity</CardDescription>
+        <CardDescription>Your latest activity this month</CardDescription>
         <CardAction>
           <Button variant="outline" size="sm" render={<Link to="/" />}>
             View all
@@ -31,7 +31,7 @@ export function RecentTransactions({
       </CardHeader>
       <CardContent>
         {transactions.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No transactions yet.</p>
+          <p className="text-sm text-muted-foreground">No transactions this month yet.</p>
         ) : (
           <ul className="divide-y">
             {transactions.map((transaction) => {

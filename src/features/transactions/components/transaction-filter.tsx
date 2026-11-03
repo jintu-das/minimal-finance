@@ -4,6 +4,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SEARCH_MAX_LENGTH } from "../schema";
 import type { TransactionType } from "../types";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
@@ -56,6 +57,7 @@ export function TransactionFilter() {
           <InputGroupInput
             type="search"
             placeholder="Search by title..."
+            maxLength={SEARCH_MAX_LENGTH}
             value={input}
             onChange={(e) => {
               setInput(e.target.value);
