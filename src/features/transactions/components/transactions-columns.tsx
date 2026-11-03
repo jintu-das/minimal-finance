@@ -43,10 +43,28 @@ export const transactionColumns = columnHelper.columns([
       </time>
     ),
     sortFn: "text",
+    meta: { className: "hidden sm:table-cell" },
   }),
   columnHelper.accessor("title", {
     header: ({ column }) => <SortableHeader column={column} label="Title" />,
+    // On mobile the date and category columns are hidden, so they are shown
+    // under the title instead.
+    cell: ({ row }) => (
+      <div className="min-w-0">
+        <p className="truncate font-medium sm:font-normal">
+          {row.original.title}
+        </p>
+        <p className="truncate text-xs text-muted-foreground sm:hidden">
+          <time dateTime={row.original.date}>
+            {formatDate(row.original.date)}
+          </time>
+          {" · "}
+          {row.original.category.label}
+        </p>
+      </div>
+    ),
     sortFn: "text",
+    meta: { className: "max-w-0 w-full sm:max-w-none sm:w-auto" },
   }),
   columnHelper.accessor("category.label", {
     header: ({ column }) => <SortableHeader column={column} label="Category" />,
@@ -54,6 +72,7 @@ export const transactionColumns = columnHelper.columns([
       <span className="text-muted-foreground">{getValue()}</span>
     ),
     sortFn: "text",
+    meta: { className: "hidden sm:table-cell" },
   }),
   columnHelper.accessor("amount", {
     header: ({ column }) => (
@@ -64,7 +83,7 @@ export const transactionColumns = columnHelper.columns([
     cell: ({ row }) => (
       <div
         className={cn(
-          "text-right",
+          "text-right font-medium tabular-nums",
           row.original.type === "income"
             ? "text-emerald-600 dark:text-emerald-400"
             : "text-muted-foreground",

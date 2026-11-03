@@ -52,8 +52,8 @@ export function TransactionFilter() {
         </TabsList>
       </Tabs>
 
-      <div className="flex items-center gap-2">
-        <InputGroup className="max-w-xs">
+      <div className="flex w-full items-center gap-2 sm:w-auto">
+        <InputGroup className="flex-1 sm:w-64 sm:flex-none">
           <InputGroupInput
             type="search"
             placeholder="Search by title..."
@@ -68,8 +68,9 @@ export function TransactionFilter() {
             <SearchIcon />
           </InputGroupAddon>
         </InputGroup>
-        <Button onClick={() => setCreateOpen(true)} size="icon">
-          <PlusIcon />
+        <Button onClick={() => setCreateOpen(true)} className="shrink-0">
+          <PlusIcon data-icon="inline-start" />
+          <span className="sr-only sm:not-sr-only">Add transaction</span>
         </Button>
       </div>
       <CreateTransaction open={createOpen} onOpenChange={setCreateOpen} />

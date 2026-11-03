@@ -1,5 +1,10 @@
 import { PageHeader } from "@/components/common/page-header";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
@@ -20,8 +25,9 @@ import {
 import { SEARCH_MAX_LENGTH } from "@/features/transactions/schema";
 import type { TransactionFilters } from "@/features/transactions/types";
 import { getApiErrorMessage } from "@/lib/api-types";
+import { cn } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import { CircleAlertIcon, RefreshCwIcon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -63,6 +69,13 @@ function Index() {
     ...transactionsQueryOptions(filters),
     retryOnMount: false,
   });
+  // The loader fetches before the new filters render, so the current results
+  // are dimmed meanwhile to show the change is in progress.
+  const isUpdating = useRouterState({ select: (state) => state.isLoading });
+  const resultsClassName = cn(
+    "transition-opacity",
+    isUpdating && "pointer-events-none opacity-50",
+  );
 
   return (
     <main className="container mx-auto space-y-8 pt-8">
@@ -74,39 +87,47 @@ function Index() {
       <Separator />
       <MonthNavigator filters={filters} />
       {query.data && !query.isError && (
-        <MonthSummary
-          transactions={query.data.transactions}
-          summary={query.data.summary}
-        />
+        <div className={resultsClassName} aria-busy={isUpdating}>
+          <MonthSummary
+            transactions={query.data.transactions}
+            summary={query.data.summary}
+          />
+        </div>
       )}
       <TransactionFilter />
       {query.isError ? (
-        <>
-          <Alert variant="destructive">
-            <CircleAlertIcon />
-            <AlertTitle>Could not load transactions</AlertTitle>
-            <AlertDescription>
-              {getApiErrorMessage(
-                query.error,
-                "An unexpected error occurred while loading transactions.",
-              )}
-            </AlertDescription>
-          </Alert>
-          <Button
-            variant="outline"
-            onClick={() => void query.refetch()}
-            disabled={query.isFetching}
-          >
-            <RefreshCwIcon data-icon="inline-start" />
-            Try again
-          </Button>
-        </>
+        <Alert variant="destructive">
+          <CircleAlertIcon />
+          <AlertTitle>Could not load transactions</AlertTitle>
+          <AlertDescription>
+            {getApiErrorMessage(
+              query.error,
+              "An unexpected error occurred while loading transactions.",
+            )}
+          </AlertDescription>
+          <AlertAction>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void query.refetch()}
+              disabled={query.isFetching}
+            >
+              <RefreshCwIcon
+                data-icon="inline-start"
+                className={cn(query.isFetching && "animate-spin")}
+              />
+              <span className="sr-only sm:not-sr-only">Try again</span>
+            </Button>
+          </AlertAction>
+        </Alert>
       ) : query.data ? (
-        <TransactionsTable
-          transactions={query.data.transactions}
-          caption={`Transactions ${periodPhrase(filters)}.`}
-          emptyTitle={`No transactions ${periodPhrase(filters)}`}
-        />
+        <div className={resultsClassName} aria-busy={isUpdating}>
+          <TransactionsTable
+            transactions={query.data.transactions}
+            caption={`Transactions ${periodPhrase(filters)}.`}
+            emptyTitle={`No transactions ${periodPhrase(filters)}`}
+          />
+        </div>
       ) : (
         <div className="flex justify-center py-12">
           <Spinner />

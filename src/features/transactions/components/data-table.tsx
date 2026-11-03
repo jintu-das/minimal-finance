@@ -25,6 +25,14 @@ import {
 } from "@/components/ui/table";
 import { transactionTableFeatures } from "./transactions-table-features";
 
+declare module "@tanstack/react-table" {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface ColumnMeta<TFeatures, TData, TValue> {
+    /** Applied to the column's header and body cells, e.g. to hide it on mobile. */
+    className?: string;
+  }
+}
+
 interface DataTableProps<TData extends RowData> {
   columns: ColumnDef<typeof transactionTableFeatures, TData>[];
   data: TData[];
@@ -56,7 +64,10 @@ export function DataTable<TData extends RowData>({
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
-              <TableHead key={header.id}>
+              <TableHead
+                key={header.id}
+                className={header.column.columnDef.meta?.className}
+              >
                 {header.isPlaceholder ? null : (
                   <table.FlexRender header={header} />
                 )}
@@ -70,7 +81,10 @@ export function DataTable<TData extends RowData>({
           table.getRowModel().rows.map((row) => (
             <TableRow key={row.id}>
               {row.getAllCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <TableCell
+                  key={cell.id}
+                  className={cell.column.columnDef.meta?.className}
+                >
                   <table.FlexRender cell={cell} />
                 </TableCell>
               ))}

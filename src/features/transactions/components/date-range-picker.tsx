@@ -56,9 +56,11 @@ export function DateRangePicker({
         setOpen(next);
       }}
     >
-      <PopoverTrigger render={<Button variant="outline" size="sm" />}>
+      <PopoverTrigger
+        render={<Button variant="outline" size="sm" className="shrink-0" />}
+      >
         <CalendarIcon data-icon="inline-start" />
-        Custom range
+        <span className="sr-only sm:not-sr-only">Custom range</span>
       </PopoverTrigger>
       <PopoverContent className="w-auto gap-0 p-0" align="end">
         <Calendar

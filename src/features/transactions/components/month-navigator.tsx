@@ -50,7 +50,7 @@ export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
 
   const heading = (
     <h2
-      className="min-w-36 text-center text-lg font-semibold tracking-tight"
+      className="truncate text-center text-base font-semibold tracking-tight sm:min-w-36 sm:text-lg"
       aria-live="polite"
     >
       {describePeriod(filters)}
@@ -60,10 +60,10 @@ export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
   return (
     <section
       aria-label="Period"
-      className="flex flex-wrap items-center justify-between gap-2"
+      className="flex items-center justify-between gap-2"
     >
       {month ? (
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
           <Button
             variant="outline"
             size="icon-sm"
@@ -92,7 +92,7 @@ export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
           )}
         </div>
       ) : (
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
           {heading}
           <Button
             variant="ghost"
@@ -103,7 +103,7 @@ export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
             }
           >
             <XIcon data-icon="inline-start" />
-            Back to months
+            <span className="sr-only sm:not-sr-only">Back to months</span>
           </Button>
         </div>
       )}
@@ -137,7 +137,8 @@ export function MonthSummary({
 
   return (
     <section aria-label="Summary">
-      <div className="grid gap-4 sm:grid-cols-3">
+      {/* Inflow and outflow sit side by side on mobile, with net below. */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
         <SummaryCard
           label="Inflow"
           value={inflow}
@@ -164,6 +165,7 @@ export function MonthSummary({
               : "text-foreground bg-muted"
           }
           valueClassName={overspent ? "text-destructive" : undefined}
+          className="col-span-2 sm:col-span-1"
         >
           <Progress
             value={spentShare}
@@ -190,6 +192,7 @@ function SummaryCard({
   icon: Icon,
   tone,
   valueClassName,
+  className,
   children,
 }: {
   label: string;
@@ -197,17 +200,21 @@ function SummaryCard({
   icon: LucideIcon;
   tone: string;
   valueClassName?: string;
+  className?: string;
   children: ReactNode;
 }) {
   return (
-    <Card size="sm" className="border-0 shadow-none ring-1 ring-border">
+    <Card
+      size="sm"
+      className={cn("min-w-0 border-0 shadow-none ring-1 ring-border", className)}
+    >
       <CardHeader className="flex flex-row items-center justify-between gap-3">
         <CardTitle className="text-sm font-medium text-muted-foreground">
           {label}
         </CardTitle>
         <span
           className={cn(
-            "flex size-8 items-center justify-center rounded-full",
+            "flex size-7 shrink-0 items-center justify-center rounded-full sm:size-8",
             tone,
           )}
         >
@@ -217,7 +224,7 @@ function SummaryCard({
       <CardContent className="flex flex-col gap-2">
         <p
           className={cn(
-            "text-3xl font-semibold tracking-tight tabular-nums",
+            "truncate text-xl font-semibold tracking-tight tabular-nums sm:text-3xl",
             valueClassName,
           )}
         >
