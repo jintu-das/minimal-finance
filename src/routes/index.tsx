@@ -6,10 +6,8 @@ import {
   AlertTitle,
 } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { transactionsQueryOptions } from "@/features/transactions/api/fetch-transactions";
-import { AiInsight } from "@/features/transactions/components/ai-insight";
 import {
   MonthNavigator,
   MonthSummary,
@@ -83,8 +81,6 @@ function Index() {
         title="Transactions"
         description="Track and manage your income and expenses."
       />
-      <AiInsight />
-      <Separator />
       <MonthNavigator filters={filters} />
       {query.data && !query.isError && (
         <div className={resultsClassName} aria-busy={isUpdating}>
