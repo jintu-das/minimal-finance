@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils";
 import { getRouteApi } from "@tanstack/react-router";
@@ -124,62 +123,48 @@ export function MonthSummary({
   transactions: Array<Transaction>;
   summary: TransactionListSummary;
 }) {
-  const { inflow, outflow, net } = summary;
-  // The API totals amounts but not rows per type, so both counts come from
-  // the rows on screen.
+  const { count, inflow, outflow, net } = summary;
+  // The API counts rows in total but not per type, so the income count comes
+  // from the rows on screen and the rest of the API total is outflow.
   const inflowCount = transactions.filter(
     (transaction) => transaction.type === "income",
   ).length;
-  const outflowCount = transactions.length - inflowCount;
+  const outflowCount = Math.max(count - inflowCount, 0);
   const overspent = net < 0;
-  // Share of inflow already spent; capped so the bar stays in bounds.
-  const spentShare = inflow > 0 ? Math.min((outflow / inflow) * 100, 100) : 0;
+  const spentShare = inflow > 0 ? (outflow / inflow) * 100 : 0;
 
   return (
     <section aria-label="Summary">
-      {/* Inflow and outflow sit side by side on mobile, with net below. */}
+      {/* Net position spans the row on mobile, with earned and spent below. */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
         <SummaryCard
-          label="Inflow"
-          value={inflow}
-          icon={ArrowUpRight}
-          tone="text-emerald-600 bg-emerald-500/10 dark:text-emerald-400"
-        >
-          {pluralize(inflowCount)}
-        </SummaryCard>
-        <SummaryCard
-          label="Outflow"
-          value={outflow}
-          icon={ArrowDownRight}
-          tone="text-destructive bg-destructive/10"
-        >
-          {pluralize(outflowCount)}
-        </SummaryCard>
-        <SummaryCard
-          label="Net"
+          label="Net position"
           value={net}
           icon={Wallet}
-          tone={
-            overspent
-              ? "text-destructive bg-destructive/10"
-              : "text-foreground bg-muted"
-          }
-          valueClassName={overspent ? "text-destructive" : undefined}
+          tone={overspent ? "text-destructive" : undefined}
           className="col-span-2 sm:col-span-1"
         >
-          <Progress
-            value={spentShare}
-            aria-label="Share of inflow spent"
-            className={cn(
-              "mb-1.5 [&_[data-slot=progress-track]]:h-1.5",
-              overspent && "[&_[data-slot=progress-indicator]]:bg-destructive",
-            )}
-          />
           {inflow === 0
             ? "No inflow in this period"
             : overspent
               ? `Overspent by ${formatCurrency(-net)}`
               : `Spent ${Math.round(spentShare)}% of inflow`}
+        </SummaryCard>
+        <SummaryCard
+          label="Earned"
+          value={inflow}
+          icon={ArrowUpRight}
+          tone="text-emerald-600 dark:text-emerald-400"
+        >
+          {pluralize(inflowCount)}
+        </SummaryCard>
+        <SummaryCard
+          label="Spent"
+          value={outflow}
+          icon={ArrowDownRight}
+          tone="text-destructive"
+        >
+          {pluralize(outflowCount)}
         </SummaryCard>
       </div>
     </section>
@@ -191,15 +176,14 @@ function SummaryCard({
   value,
   icon: Icon,
   tone,
-  valueClassName,
   className,
   children,
 }: {
   label: string;
   value: number;
   icon: LucideIcon;
-  tone: string;
-  valueClassName?: string;
+  // Text color for the icon. Negative values are always shown as destructive.
+  tone?: string;
   className?: string;
   children: ReactNode;
 }) {
@@ -214,18 +198,18 @@ function SummaryCard({
         </CardTitle>
         <span
           className={cn(
-            "flex size-7 shrink-0 items-center justify-center rounded-full sm:size-8",
+            "flex size-8 shrink-0 items-center justify-center bg-muted text-muted-foreground",
             tone,
           )}
         >
           <Icon aria-hidden="true" className="size-4" />
         </span>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
+      <CardContent className="flex flex-col gap-1">
         <p
           className={cn(
             "truncate text-xl font-semibold tracking-tight tabular-nums sm:text-3xl",
-            valueClassName,
+            value < 0 && "text-destructive",
           )}
         >
           {formatCurrency(value)}
