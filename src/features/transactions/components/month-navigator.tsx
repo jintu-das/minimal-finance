@@ -82,7 +82,7 @@ export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
           </Button>
           {month !== thisMonth && (
             <Button
-              variant="ghost"
+              variant="secondary"
               size="sm"
               onClick={() => goToMonth(thisMonth)}
             >
