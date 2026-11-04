@@ -162,7 +162,7 @@ export function MonthSummary({
           label="Spent"
           value={outflow}
           icon={ArrowDownRight}
-          tone="text-destructive"
+          tone="text-rose-600 dark:text-rose-400"
         >
           {pluralize(outflowCount)}
         </SummaryCard>

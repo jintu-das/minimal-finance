@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatDate } from "@/utils";
 import { createColumnHelper, type Column } from "@tanstack/react-table";
+import { TypeIcon } from "@/components/common/type-icon";
 import { ArrowUpDown } from "lucide-react";
 import type { Transaction } from "../types";
 import { TransactionRowActions } from "./transaction-row-actions";
@@ -50,17 +51,20 @@ export const transactionColumns = columnHelper.columns([
     // On mobile the date and category columns are hidden, so they are shown
     // under the title instead.
     cell: ({ row }) => (
-      <div className="min-w-0">
-        <p className="truncate font-medium sm:font-normal">
-          {row.original.title}
-        </p>
-        <p className="truncate text-xs text-muted-foreground sm:hidden">
-          <time dateTime={row.original.date}>
-            {formatDate(row.original.date)}
-          </time>
-          {" · "}
-          {row.original.category.label}
-        </p>
+      <div className="flex min-w-0 items-center gap-3">
+        <TypeIcon type={row.original.type} />
+        <div className="min-w-0">
+          <p className="truncate font-medium sm:font-normal">
+            {row.original.title}
+          </p>
+          <p className="truncate text-xs text-muted-foreground sm:hidden">
+            <time dateTime={row.original.date}>
+              {formatDate(row.original.date)}
+            </time>
+            {" · "}
+            {row.original.category.label}
+          </p>
+        </div>
       </div>
     ),
     sortFn: "text",
@@ -69,7 +73,9 @@ export const transactionColumns = columnHelper.columns([
   columnHelper.accessor("category.label", {
     header: ({ column }) => <SortableHeader column={column} label="Category" />,
     cell: ({ getValue }) => (
-      <span className="text-muted-foreground">{getValue()}</span>
+      <span className="inline-flex items-center bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+        {getValue()}
+      </span>
     ),
     sortFn: "text",
     meta: { className: "hidden sm:table-cell" },

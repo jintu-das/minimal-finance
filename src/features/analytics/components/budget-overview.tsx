@@ -7,6 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils";
 import { categorySpending } from "../placeholder-data";
 
@@ -51,7 +52,11 @@ export function BudgetOverview() {
                 <Progress
                   value={Math.min(percent, 100)}
                   aria-label={`${category.label} budget used`}
-                  className="*:data-[slot=progress-track]:h-1.5"
+                  className={cn(
+                    "*:data-[slot=progress-track]:h-1.5",
+                    isNearLimit &&
+                      "[&_[data-slot=progress-indicator]]:bg-destructive",
+                  )}
                 />
               </li>
             );

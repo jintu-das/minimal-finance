@@ -26,6 +26,8 @@ export function SummaryCards({
       icon: Wallet,
       // Whether an increase is good news for this metric.
       upIsGood: true,
+      // Icon color; net position turns destructive only when negative.
+      tone: current.netPosition < 0 ? "text-destructive" : undefined,
     },
     {
       label: "Earned",
@@ -33,6 +35,7 @@ export function SummaryCards({
       change: percentChange(current.totalEarned, previous.totalEarned),
       icon: ArrowUpRight,
       upIsGood: true,
+      tone: "text-emerald-600 dark:text-emerald-400",
     },
     {
       label: "Spent",
@@ -40,6 +43,7 @@ export function SummaryCards({
       change: percentChange(current.totalSpent, previous.totalSpent),
       icon: ArrowDownRight,
       upIsGood: false,
+      tone: "text-rose-600 dark:text-rose-400",
     },
   ];
 
@@ -48,7 +52,7 @@ export function SummaryCards({
       aria-label="Monthly summary"
       className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
-      {summaries.map(({ label, value, change, icon: Icon, upIsGood }) => {
+      {summaries.map(({ label, value, change, icon: Icon, upIsGood, tone }) => {
         return (
           <Card
             key={label}
@@ -59,12 +63,22 @@ export function SummaryCards({
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {label}
               </CardTitle>
-              <span className="flex size-8 items-center justify-center bg-muted text-muted-foreground">
+              <span
+                className={cn(
+                  "flex size-8 items-center justify-center bg-muted text-muted-foreground",
+                  tone,
+                )}
+              >
                 <Icon aria-hidden="true" className="size-4" />
               </span>
             </CardHeader>
             <CardContent className="flex flex-col gap-1">
-              <p className="text-3xl font-semibold tracking-tight tabular-nums">
+              <p
+                className={cn(
+                  "text-3xl font-semibold tracking-tight tabular-nums",
+                  value < 0 && "text-destructive",
+                )}
+              >
                 {formatCurrency(value)}
               </p>
               {change === null ? (

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import { TypeIcon } from "@/components/common/type-icon";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -36,16 +36,13 @@ export function RecentTransactions({
           <ul className="divide-y">
             {transactions.map((transaction) => {
               const isIncome = transaction.type === "income";
-              const Icon = isIncome ? ArrowUpRight : ArrowDownRight;
 
               return (
                 <li
                   key={transaction.id}
                   className="flex items-center gap-3 py-3 first:pt-0 last:pb-0"
                 >
-                  <span className="flex size-8 shrink-0 items-center justify-center bg-muted text-muted-foreground">
-                    <Icon aria-hidden="true" className="size-4" />
-                  </span>
+                  <TypeIcon type={transaction.type} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">
                       {transaction.title}
