@@ -52,6 +52,12 @@ export function istToday(now = new Date()) {
   return parseDay(istDay(now));
 }
 
+// The `month` search param for a month: the current month is the default, so
+// it is kept out of the URL.
+export function monthSearchParam(month: string, thisMonth = currentMonth()) {
+  return month === thisMonth ? undefined : month;
+}
+
 export function shiftMonth(month: string, amount: number) {
   return format(addMonths(parseMonth(month), amount), MONTH_FORMAT);
 }

@@ -6,20 +6,19 @@ import { getRouteApi } from "@tanstack/react-router";
 import {
   ArrowDownRight,
   ArrowUpRight,
-  ChevronLeftIcon,
-  ChevronRightIcon,
   Wallet,
   XIcon,
   type LucideIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { currentMonth, describePeriod, shiftMonth } from "../month";
+import { currentMonth, describePeriod, monthSearchParam } from "../month";
 import type {
   Transaction,
   TransactionFilters,
   TransactionListSummary,
 } from "../types";
 import { DateRangePicker } from "./date-range-picker";
+import { MonthStepper, PeriodHeading } from "./month-stepper";
 
 const route = getRouteApi("/");
 
@@ -33,12 +32,11 @@ export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
   const { month, from, to } = filters;
 
   // Each mode clears the other's params, since the API rejects both together.
-  // The current month is the default, so it is kept out of the URL.
   const goToMonth = (next: string) =>
     navigate({
       search: (prev) => ({
         ...prev,
-        month: next === thisMonth ? undefined : next,
+        month: monthSearchParam(next, thisMonth),
         from: undefined,
         to: undefined,
       }),
@@ -47,52 +45,16 @@ export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
   const applyRange = (range: { from: string; to: string }) =>
     navigate({ search: (prev) => ({ ...prev, month: undefined, ...range }) });
 
-  const heading = (
-    <h2
-      className="truncate text-center text-base font-semibold tracking-tight sm:min-w-36 sm:text-lg"
-      aria-live="polite"
-    >
-      {describePeriod(filters)}
-    </h2>
-  );
-
   return (
     <section
       aria-label="Period"
       className="flex items-center justify-between gap-2"
     >
       {month ? (
-        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
-          <Button
-            variant="outline"
-            size="icon-sm"
-            onClick={() => goToMonth(shiftMonth(month, -1))}
-            aria-label="Previous month"
-          >
-            <ChevronLeftIcon />
-          </Button>
-          {heading}
-          <Button
-            variant="outline"
-            size="icon-sm"
-            onClick={() => goToMonth(shiftMonth(month, 1))}
-            aria-label="Next month"
-          >
-            <ChevronRightIcon />
-          </Button>
-          {month !== thisMonth && (
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => goToMonth(thisMonth)}
-            >
-              This month
-            </Button>
-          )}
-        </div>
+        <MonthStepper month={month} thisMonth={thisMonth} onChange={goToMonth} />
       ) : (
         <div className="flex min-w-0 items-center gap-1 sm:gap-2">
-          {heading}
+          <PeriodHeading>{describePeriod(filters)}</PeriodHeading>
           <Button
             variant="ghost"
             size="sm"
