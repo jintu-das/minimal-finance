@@ -17,20 +17,34 @@ describe("createTransactionFormSchema", () => {
   });
 
   it("trims the title and rejects a blank one", () => {
-    expect(createTransactionFormSchema.parse({ ...valid, title: " Rent " }).title).toBe("Rent");
-    expect(createTransactionFormSchema.safeParse({ ...valid, title: "  " }).success).toBe(false);
+    expect(
+      createTransactionFormSchema.parse({ ...valid, title: " Rent " }).title,
+    ).toBe("Rent");
+    expect(
+      createTransactionFormSchema.safeParse({ ...valid, title: "  " }).success,
+    ).toBe(false);
   });
 
   it.each(["0", "-5", "abc", ""])("rejects amount %j", (amount) => {
-    expect(createTransactionFormSchema.safeParse({ ...valid, amount }).success).toBe(false);
+    expect(
+      createTransactionFormSchema.safeParse({ ...valid, amount }).success,
+    ).toBe(false);
   });
 
   it("requires a category and a date", () => {
-    expect(createTransactionFormSchema.safeParse({ ...valid, categoryId: "" }).success).toBe(false);
-    expect(createTransactionFormSchema.safeParse({ ...valid, date: "" }).success).toBe(false);
+    expect(
+      createTransactionFormSchema.safeParse({ ...valid, categoryId: "" })
+        .success,
+    ).toBe(false);
+    expect(
+      createTransactionFormSchema.safeParse({ ...valid, date: "" }).success,
+    ).toBe(false);
   });
 
   it("rejects an unknown type", () => {
-    expect(createTransactionFormSchema.safeParse({ ...valid, type: "transfer" }).success).toBe(false);
+    expect(
+      createTransactionFormSchema.safeParse({ ...valid, type: "transfer" })
+        .success,
+    ).toBe(false);
   });
 });

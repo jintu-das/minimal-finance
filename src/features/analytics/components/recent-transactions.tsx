@@ -11,10 +11,7 @@ import {
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { formatCurrency, formatDate } from "@/utils";
-import {
-  monthSearchParam,
-  periodPhrase,
-} from "@/features/transactions/month";
+import { monthSearchParam, periodPhrase } from "@/features/transactions/month";
 import type { Transaction } from "@/features/transactions/types";
 
 export function RecentTransactions({
@@ -31,7 +28,7 @@ export function RecentTransactions({
   className?: string;
 }) {
   const isThisMonth = month === thisMonth;
-  const period = isThisMonth ? "this month" : periodPhrase({ month });
+  const period = isThisMonth ? "this month" : periodPhrase(month);
 
   return (
     <Card className={cn("border-0 shadow-none ring-1 ring-border", className)}>
@@ -39,12 +36,16 @@ export function RecentTransactions({
         <CardTitle>Recent transactions</CardTitle>
         <CardDescription>Your latest activity {period}</CardDescription>
         <CardAction>
-          <Button variant="outline" size="sm" render={
+          <Button
+            variant="outline"
+            size="sm"
+            render={
               <Link
                 to="/"
                 search={{ month: monthSearchParam(month, thisMonth) }}
               />
-            }>
+            }
+          >
             View all
           </Button>
         </CardAction>

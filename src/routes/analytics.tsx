@@ -79,14 +79,12 @@ function RouteComponent() {
         description={`Your finances for ${formatMonth(month)}.`}
       />
 
-      <section aria-label="Period">
-        <MonthStepper
-          month={month}
-          thisMonth={thisMonth}
-          max={thisMonth}
-          onChange={goToMonth}
-        />
-      </section>
+      <MonthStepper
+        month={month}
+        thisMonth={thisMonth}
+        max={thisMonth}
+        onChange={goToMonth}
+      />
 
       <SummaryCards current={current} previous={previous} />
 

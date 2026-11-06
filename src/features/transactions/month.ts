@@ -1,4 +1,4 @@
-import { addMonths, format, isValid, parse } from "date-fns";
+import { addMonths, format, parse } from "date-fns";
 import type { TransactionFilters } from "./types";
 
 // Months are "yyyy-MM" and days "yyyy-MM-dd" strings so they round-trip
@@ -7,7 +7,6 @@ import type { TransactionFilters } from "./types";
 const MONTH_FORMAT = "yyyy-MM";
 const DAY_FORMAT = "yyyy-MM-dd";
 const MONTH_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;
-const DAY_PATTERN = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
 
 // Users are in India and the API buckets by IST, so instants are read in IST.
 // Core date-fns has no timezone support, hence Intl here. en-CA formats as
@@ -26,15 +25,6 @@ export const toDay = (date: Date) => format(date, DAY_FORMAT);
 
 export function isValidMonth(value: unknown): value is string {
   return typeof value === "string" && MONTH_PATTERN.test(value);
-}
-
-// The pattern alone lets impossible days such as 2026-02-31 through.
-export function isValidDay(value: unknown): value is string {
-  return (
-    typeof value === "string" &&
-    DAY_PATTERN.test(value) &&
-    isValid(parseDay(value))
-  );
 }
 
 // The IST calendar day (yyyy-MM-dd) of an instant.
@@ -66,42 +56,26 @@ export function formatMonth(month: string) {
   return format(parseMonth(month), "MMMM yyyy");
 }
 
-export function formatDay(day: string) {
-  return format(parseDay(day), "d MMM yyyy");
-}
-
-// The API rejects `month` combined with `from`/`to`, so a range always wins
-// and the month defaults to the current IST month when neither is set.
-export function resolveTransactionFilters({
-  type,
-  search,
-  month,
-  from,
-  to,
-}: TransactionFilters): TransactionFilters {
-  const period =
-    from || to ? { from, to } : { month: month ?? currentMonth() };
+// The month defaults to the current IST month when none is set. Callers that
+// also show `thisMonth` pass the value they read, so the two always agree.
+export function resolveTransactionFilters(
+  { type, search, month }: TransactionFilters,
+  thisMonth = currentMonth(),
+): TransactionFilters & { month: string } {
   // Undefined keys are left out of the query key hash and the request params.
-  return { type, search, ...period };
+  return { type, search, month: month ?? thisMonth };
 }
 
-// Heading label, e.g. "October 2026" or "1 Oct 2026 to 15 Oct 2026".
-export function describePeriod({ month, from, to }: TransactionFilters) {
-  if (month) return formatMonth(month);
-  if (from && to) {
-    return from === to
-      ? formatDay(from)
-      : `${formatDay(from)} to ${formatDay(to)}`;
-  }
-  if (from) return `From ${formatDay(from)}`;
-  return to ? `Up to ${formatDay(to)}` : "";
+// Links shared before range filtering was removed carry `from`/`to` days
+// (yyyy-MM-dd) instead of a month. They open on the month the range started.
+export function monthFromLegacyRange(from: unknown, to: unknown) {
+  const day = typeof from === "string" ? from : to;
+  if (typeof day !== "string") return undefined;
+  const month = day.slice(0, 7);
+  return day.length === 10 && isValidMonth(month) ? month : undefined;
 }
 
-// Mid-sentence form, e.g. "in October 2026" or "on 5 Oct 2026".
-export function periodPhrase({ month, from, to }: TransactionFilters) {
-  if (month) return `in ${formatMonth(month)}`;
-  if (from && from === to) return `on ${formatDay(from)}`;
-  const start = from ? `from ${formatDay(from)}` : "";
-  const end = to ? `${from ? "to" : "up to"} ${formatDay(to)}` : "";
-  return [start, end].filter(Boolean).join(" ");
+// Mid-sentence form, e.g. "in October 2026".
+export function periodPhrase(month: string) {
+  return `in ${formatMonth(month)}`;
 }

@@ -3,8 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { formatMonth, shiftMonth } from "../month";
 
-// The period heading, shared by month and range modes.
-export function PeriodHeading({ children }: { children: ReactNode }) {
+function PeriodHeading({ children }: { children: ReactNode }) {
   return (
     <h2
       className="truncate text-center text-base font-semibold tracking-tight sm:min-w-36 sm:text-lg"
@@ -19,6 +18,7 @@ export function PeriodHeading({ children }: { children: ReactNode }) {
 // to the current month. Shared by the transactions and analytics pages.
 // `thisMonth` comes from the caller so it matches the month its data was
 // loaded for, and `max` (if set) is the last month Next can reach.
+// Renders its own labelled section, so pages place it directly.
 export function MonthStepper({
   month,
   thisMonth,
@@ -34,7 +34,10 @@ export function MonthStepper({
   const atMax = max !== undefined && month >= max;
 
   return (
-    <div className="flex min-w-0 items-center gap-1 sm:gap-2">
+    <section
+      aria-label="Period"
+      className="flex min-w-0 items-center gap-1 sm:gap-2"
+    >
       <Button
         variant="outline"
         size="icon-sm"
@@ -54,10 +57,14 @@ export function MonthStepper({
         <ChevronRightIcon />
       </Button>
       {month !== thisMonth && (
-        <Button variant="secondary" size="sm" onClick={() => onChange(thisMonth)}>
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => onChange(thisMonth)}
+        >
           This month
         </Button>
       )}
-    </div>
+    </section>
   );
 }

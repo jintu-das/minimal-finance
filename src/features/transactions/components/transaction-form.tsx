@@ -250,15 +250,9 @@ export function TransactionForm({
                     <Calendar
                       mode="single"
                       today={istToday()}
-                      selected={
-                        field.value
-                          ? parseDay(field.value)
-                          : undefined
-                      }
+                      selected={field.value ? parseDay(field.value) : undefined}
                       defaultMonth={
-                        field.value
-                          ? parseDay(field.value)
-                          : undefined
+                        field.value ? parseDay(field.value) : undefined
                       }
                       onSelect={(date) =>
                         field.onChange(date ? toDay(date) : "")

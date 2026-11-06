@@ -26,7 +26,7 @@ export type TransactionSummaryParams = {
   to?: string;
 };
 
-export type TransactionType =Transaction["type"];
+export type TransactionType = Transaction["type"];
 
 // Totals the API returns in the list envelope `meta`, for the same filters.
 export type TransactionListSummary = {
@@ -41,11 +41,9 @@ export type TransactionList = {
   summary: TransactionListSummary;
 };
 
-// `month` (yyyy-MM) and `from`/`to` (yyyy-MM-dd) are mutually exclusive.
+// `month` is a yyyy-MM calendar month, bucketed by the API in IST.
 export type TransactionFilters = {
   type?: TransactionType;
   search?: string;
   month?: string;
-  from?: string;
-  to?: string;
 };

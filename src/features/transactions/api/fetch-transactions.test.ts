@@ -50,12 +50,11 @@ describe("transactions fetchers", () => {
   it("sends only keys that have values", () => {
     expect(
       buildTransactionParams({
-        from: "2026-10-01",
-        to: "2026-10-15",
+        month: "2026-10",
         search: "",
         type: undefined,
       }).toString(),
-    ).toBe("from=2026-10-01&to=2026-10-15");
+    ).toBe("month=2026-10");
     expect(buildTransactionParams({}).toString()).toBe("");
   });
 

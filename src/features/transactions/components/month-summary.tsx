@@ -1,82 +1,17 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/utils";
-import { getRouteApi } from "@tanstack/react-router";
 import {
   ArrowDownRight,
   ArrowUpRight,
   Wallet,
-  XIcon,
   type LucideIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { currentMonth, describePeriod, monthSearchParam } from "../month";
-import type {
-  Transaction,
-  TransactionFilters,
-  TransactionListSummary,
-} from "../types";
-import { DateRangePicker } from "./date-range-picker";
-import { MonthStepper, PeriodHeading } from "./month-stepper";
-
-const route = getRouteApi("/");
+import type { Transaction, TransactionListSummary } from "../types";
 
 const pluralize = (count: number) =>
   `${count} ${count === 1 ? "transaction" : "transactions"}`;
-
-// `filters` are the resolved filters, so exactly one of `month` or a range is set.
-export function MonthNavigator({ filters }: { filters: TransactionFilters }) {
-  const navigate = route.useNavigate();
-  const thisMonth = currentMonth();
-  const { month, from, to } = filters;
-
-  // Each mode clears the other's params, since the API rejects both together.
-  const goToMonth = (next: string) =>
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        month: monthSearchParam(next, thisMonth),
-        from: undefined,
-        to: undefined,
-      }),
-    });
-
-  const applyRange = (range: { from: string; to: string }) =>
-    navigate({ search: (prev) => ({ ...prev, month: undefined, ...range }) });
-
-  return (
-    <section
-      aria-label="Period"
-      className="flex items-center justify-between gap-2"
-    >
-      {month ? (
-        <MonthStepper month={month} thisMonth={thisMonth} onChange={goToMonth} />
-      ) : (
-        <div className="flex min-w-0 items-center gap-1 sm:gap-2">
-          <PeriodHeading>{describePeriod(filters)}</PeriodHeading>
-          <Button
-            variant="ghost"
-            size="sm"
-            // Return to the month the range started in.
-            onClick={() =>
-              goToMonth((from ?? to)?.slice(0, 7) ?? thisMonth)
-            }
-          >
-            <XIcon data-icon="inline-start" />
-            <span className="sr-only sm:not-sr-only">Back to months</span>
-          </Button>
-        </div>
-      )}
-      <DateRangePicker
-        month={month}
-        from={from}
-        to={to}
-        onApply={applyRange}
-      />
-    </section>
-  );
-}
 
 export function MonthSummary({
   transactions,
@@ -152,7 +87,10 @@ function SummaryCard({
   return (
     <Card
       size="sm"
-      className={cn("min-w-0 border-0 shadow-none ring-1 ring-border", className)}
+      className={cn(
+        "min-w-0 border-0 shadow-none ring-1 ring-border",
+        className,
+      )}
     >
       <CardHeader className="flex flex-row items-center justify-between gap-3">
         <CardTitle className="text-sm font-medium text-muted-foreground">

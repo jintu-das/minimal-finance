@@ -1,10 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   currentMonth,
-  describePeriod,
   formatMonth,
-  isValidDay,
   isValidMonth,
+  monthFromLegacyRange,
   istDay,
   periodPhrase,
   resolveTransactionFilters,
@@ -17,14 +16,6 @@ describe("month helpers", () => {
     expect(isValidMonth("2026-13")).toBe(false);
     expect(isValidMonth("2026-1")).toBe(false);
     expect(isValidMonth(202611)).toBe(false);
-  });
-
-  it("validates yyyy-MM-dd strings", () => {
-    expect(isValidDay("2026-10-05")).toBe(true);
-    expect(isValidDay("2026-10-32")).toBe(false);
-    expect(isValidDay("2026-10-05T10:00:00")).toBe(false);
-    expect(isValidDay("2026-02-31")).toBe(false);
-    expect(isValidDay("2028-02-29")).toBe(true);
   });
 
   it("reads an instant's calendar day in IST", () => {
@@ -49,19 +40,8 @@ describe("month helpers", () => {
     expect(formatMonth("2026-01")).toBe("January 2026");
   });
 
-  it("describes the selected period", () => {
-    expect(describePeriod({ month: "2026-10" })).toBe("October 2026");
-    expect(describePeriod({ from: "2026-10-01", to: "2026-10-15" })).toBe(
-      "1 Oct 2026 to 15 Oct 2026",
-    );
-    expect(describePeriod({ from: "2026-10-05", to: "2026-10-05" })).toBe(
-      "5 Oct 2026",
-    );
-    expect(periodPhrase({ month: "2026-10" })).toBe("in October 2026");
-    expect(periodPhrase({ from: "2026-10-05", to: "2026-10-05" })).toBe(
-      "on 5 Oct 2026",
-    );
-    expect(periodPhrase({ to: "2026-10-15" })).toBe("up to 15 Oct 2026");
+  it("describes the selected month mid-sentence", () => {
+    expect(periodPhrase("2026-10")).toBe("in October 2026");
   });
 });
 
@@ -70,14 +50,28 @@ describe("resolveTransactionFilters", () => {
     expect(resolveTransactionFilters({})).toEqual({ month: currentMonth() });
   });
 
-  it("never combines a month with a range", () => {
+  it("fills in the month the caller read", () => {
+    expect(resolveTransactionFilters({}, "2026-10")).toEqual({
+      month: "2026-10",
+    });
+  });
+
+  it("keeps a requested month alongside other filters", () => {
     expect(
-      resolveTransactionFilters({
-        month: "2026-09",
-        from: "2026-10-01",
-        to: "2026-10-15",
-        type: "expense",
-      }),
-    ).toEqual({ from: "2026-10-01", to: "2026-10-15", type: "expense" });
+      resolveTransactionFilters({ month: "2026-09", type: "expense" }),
+    ).toEqual({ month: "2026-09", type: "expense" });
+  });
+});
+
+describe("monthFromLegacyRange", () => {
+  it("opens an old range link on the month it started", () => {
+    expect(monthFromLegacyRange("2026-08-01", "2026-09-15")).toBe("2026-08");
+    expect(monthFromLegacyRange(undefined, "2026-09-15")).toBe("2026-09");
+  });
+
+  it("ignores missing or malformed days", () => {
+    expect(monthFromLegacyRange(undefined, undefined)).toBeUndefined();
+    expect(monthFromLegacyRange("2026-13-01", undefined)).toBeUndefined();
+    expect(monthFromLegacyRange("2026-08", undefined)).toBeUndefined();
   });
 });
