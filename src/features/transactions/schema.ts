@@ -1,7 +1,33 @@
 import * as z from "zod";
+import { isValidMonth, monthFromLegacyRange } from "./month";
+import type { TransactionFilters } from "./types";
 
 // The API rejects longer title searches.
 export const SEARCH_MAX_LENGTH = 100;
+
+// Invalid params fall back to undefined instead of failing the route.
+export const transactionFiltersSchema = z
+  .object({
+    type: z.enum(["income", "expense"]).optional().catch(undefined),
+    // Trimmed and capped like the search input, so a long or blank value from
+    // a shared URL never reaches the API.
+    search: z
+      .string()
+      .trim()
+      .transform((value) => value.slice(0, SEARCH_MAX_LENGTH) || undefined)
+      .optional()
+      .catch(undefined),
+    month: z.string().refine(isValidMonth).optional().catch(undefined),
+    // Legacy from/to links are mapped to their month, then dropped.
+    from: z.unknown().optional(),
+    to: z.unknown().optional(),
+  })
+  .transform(
+    ({ from, to, ...filters }): TransactionFilters => ({
+      ...filters,
+      month: filters.month ?? monthFromLegacyRange(from, to),
+    }),
+  );
 
 export const createTransactionFormSchema = z.object({
   title: z.string().trim().min(1, "Enter a title."),

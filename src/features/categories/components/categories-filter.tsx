@@ -8,6 +8,7 @@ import { getRouteApi } from "@tanstack/react-router";
 import { PlusIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
+import { CATEGORY_SEARCH_MAX_LENGTH } from "../schema";
 import { CreateCategory } from "./create-category";
 
 const route = getRouteApi("/categories");
@@ -34,6 +35,7 @@ export function CategoriesFilter() {
         <InputGroupInput
           type="search"
           placeholder="Search by name..."
+          maxLength={CATEGORY_SEARCH_MAX_LENGTH}
           value={input}
           onChange={(e) => {
             setInput(e.target.value);

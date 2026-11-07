@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createTransactionFormSchema } from "./schema";
+import {
+  createTransactionFormSchema,
+  SEARCH_MAX_LENGTH,
+  transactionFiltersSchema,
+} from "./schema";
 
 const valid = {
   title: "Weekly groceries",
@@ -46,5 +50,49 @@ describe("createTransactionFormSchema", () => {
       createTransactionFormSchema.safeParse({ ...valid, type: "transfer" })
         .success,
     ).toBe(false);
+  });
+});
+
+describe("transactionFiltersSchema", () => {
+  it("keeps valid filters", () => {
+    expect(
+      transactionFiltersSchema.parse({
+        type: "income",
+        search: " rent ",
+        month: "2026-11",
+      }),
+    ).toEqual({ type: "income", search: "rent", month: "2026-11" });
+  });
+
+  it("drops invalid values instead of failing", () => {
+    expect(
+      transactionFiltersSchema.parse({
+        type: "transfer",
+        search: 42,
+        month: "2026-13",
+      }),
+    ).toEqual({ type: undefined, search: undefined, month: undefined });
+  });
+
+  it("drops a blank search and caps a long one", () => {
+    expect(transactionFiltersSchema.parse({ search: "   " }).search).toBe(
+      undefined,
+    );
+    expect(
+      transactionFiltersSchema.parse({ search: "a".repeat(150) }).search,
+    ).toHaveLength(SEARCH_MAX_LENGTH);
+  });
+
+  it("maps a legacy from/to range to its month and drops the range", () => {
+    expect(
+      transactionFiltersSchema.parse({ from: "2026-10-01", to: "2026-10-31" }),
+    ).toEqual({ month: "2026-10" });
+  });
+
+  it("prefers month over a legacy range", () => {
+    expect(
+      transactionFiltersSchema.parse({ month: "2026-11", from: "2026-10-01" })
+        .month,
+    ).toBe("2026-11");
   });
 });

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createCategoryFormSchema } from "./schema";
+import {
+  CATEGORY_SEARCH_MAX_LENGTH,
+  categoriesFiltersSchema,
+  createCategoryFormSchema,
+} from "./schema";
 
 const valid = { label: "Groceries", budget: "250", type: "expense" };
 
@@ -45,5 +49,25 @@ describe("createCategoryFormSchema", () => {
 
   it("rejects an unknown type", () => {
     expect(createCategoryFormSchema.safeParse({ ...valid, type: "transfer" }).success).toBe(false);
+  });
+});
+
+describe("categoriesFiltersSchema", () => {
+  it("trims the search and drops a blank or invalid one", () => {
+    expect(categoriesFiltersSchema.parse({ search: " food " }).search).toBe(
+      "food",
+    );
+    expect(categoriesFiltersSchema.parse({ search: "  " }).search).toBe(
+      undefined,
+    );
+    expect(categoriesFiltersSchema.parse({ search: 42 }).search).toBe(
+      undefined,
+    );
+  });
+
+  it("caps a long search instead of dropping it", () => {
+    expect(
+      categoriesFiltersSchema.parse({ search: "a".repeat(150) }).search,
+    ).toHaveLength(CATEGORY_SEARCH_MAX_LENGTH);
   });
 });

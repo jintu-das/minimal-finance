@@ -6,12 +6,18 @@ export const createCategoryFormSchema = z.object({
   type: z.enum(["income", "expense"]),
 });
 
+// The API rejects longer name searches.
+export const CATEGORY_SEARCH_MAX_LENGTH = 100;
+
 export const categoriesFiltersSchema = z.object({
+  // Trimmed and capped like the search input, so a long or blank value from
+  // a shared URL never reaches the API.
   search: z
     .string()
     .trim()
-    .max(100)
-    .transform((value) => value || undefined)
+    .transform(
+      (value) => value.slice(0, CATEGORY_SEARCH_MAX_LENGTH) || undefined,
+    )
     .optional()
     .catch(undefined),
 });

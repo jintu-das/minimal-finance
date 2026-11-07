@@ -33,4 +33,6 @@ React 19 + TypeScript + Vite SPA. Path alias `@/` maps to `src/`.
 
 **UI:** shadcn with the `base-luma` style on `@base-ui/react` (not Radix). Components use `render={...}` props instead of `asChild`. Tailwind v4 is configured through `src/index.css`, with no tailwind config file. Add components with `npx shadcn@latest add <name>`. If the registry is unreachable, write the component by hand under `src/components/ui/`. Toasts use `sonner` via `<Toaster />` mounted in `main.tsx`.
 
+**Loading states:** always use a skeleton (shadcn `Skeleton`) shaped like the content it replaces, including route `pendingComponent`s. Use `Spinner` only where there is no room for a skeleton, such as inside a button or a small icon slot.
+
 **Transactions:** currently driven by `mock-data.ts` and TanStack Table, with no backend calls yet.
